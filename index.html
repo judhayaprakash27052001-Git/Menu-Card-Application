@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weekly Menu Selection | Koumatha</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    body {
+      background: 
+        linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.92)),
+        url('https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170') center center/cover no-repeat;
+      font-family: 'Montserrat', Arial, sans-serif;
+      margin: 0;
+      color: #222;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .header {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 94vw;
+      background: rgba(255,255,255,0.98);
+      box-shadow: 0 6px 24px 0 rgba(255,105,135,0.17);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 0 18px 0;
+      border-radius: 0 0 30px 30px;
+      animation: fadeInDown 1.2s cubic-bezier(.4,.8,.4,1.2);
+    }
+    @keyframes fadeInDown {
+      0% { opacity: 0; transform: translateY(-80px) translateX(-50%);}
+      100% { opacity: 1; transform: translateY(0) translateX(-50%);}
+    }
+    .logo {
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #ff7f50;
+      text-shadow: 0 2px 10px rgba(255,105,135,0.15);
+      margin-bottom: 6px;
+      background: linear-gradient(90deg, #ff7f50 30%, #bfa43a 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: logoPop 1.3s cubic-bezier(.4,2,.4,1.7);
+    }
+    @keyframes logoPop {
+      0% {scale:0.6;}
+      100% {scale:1;}
+    }
+    .sub {
+      font-size: 1.08rem;
+      color: #555;
+      margin-bottom: 8px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 6px rgba(255,105,135,0.08);
+      animation: fadeInSub 1.5s;
+    }
+    @keyframes fadeInSub {
+      from { opacity: 0;}
+      to { opacity: 1;}
+    }
+    .main-title {
+      margin: 130px auto 22px auto;
+      font-size: 2.1rem;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: 1.3px;
+      background: linear-gradient(90deg, #ff7f50 40%, #bfa43a 90%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 2px 10px #ffd1a433;
+      animation: fadeInSub 1.4s;
+    }
+    .container {
+      margin: 0 auto 44px auto;
+      max-width: 600px;
+      background: #ffffffcc;
+      border-radius: 26px;
+      box-shadow: 0 10px 40px rgba(255,105,135,0.13), 0 2px 16px #bfa43a25;
+      padding: 30px 22px 55px 22px;
+      animation: fadeInContainer 1.2s;
+    }
+    @keyframes fadeInContainer {
+      0% { opacity: 0; transform: scale(0.97);}
+      100% { opacity: 1; transform: scale(1);}
+    }
+    .day-card {
+      border: 1.5px solid #ff7f5025;
+      border-radius: 18px;
+      margin-bottom: 26px;
+      box-shadow: 0 2px 18px #ffd1a433;
+      background: #fff;
+      transition: box-shadow 0.22s, border-color 0.18s;
+      animation: cardPop 0.7s;
+    }
+    @keyframes cardPop {
+      0% { opacity: 0; transform: scale(0.97);}
+      100% { opacity: 1; transform: scale(1);}
+    }
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 1.13rem;
+      padding: 22px 24px;
+      color: #ff7f50;
+      cursor: pointer;
+      border-radius: 18px 18px 0 0;
+      background: linear-gradient(90deg, #fff 75%, #fff8e6 100%);
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .day-header .indicator {
+      font-size: 1.3em;
+      transition: transform 0.3s cubic-bezier(.2,1.5,.6,1);
+    }
+    .day-card.collapsed .indicator {
+      transform: rotate(-90deg);
+    }
+    .card-content {
+      padding: 16px 24px 24px 24px;
+      display: none;
+      background: #ffffffec;
+      border-radius: 0 0 18px 18px;
+      animation: fadeInCard 0.5s;
+    }
+    @keyframes fadeInCard {
+      0% {opacity: 0;}
+      100% {opacity: 1;}
+    }
+    .day-card.expanded .card-content {
+      display: block;
+      animation: fadeInCard 0.7s;
+    }
+    .meal-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .dropdown-label {
+      font-weight: 700;
+      font-size: 1.02em;
+      margin-top: 10px;
+      display: block;
+      color: #bfa43a;
+      letter-spacing: 0.6px;
+      min-width: 75px;
+    }
+    select {
+      flex: 2;
+      min-width: 0;
+      margin: 3px 0 0 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1.5px solid #bfa43a35;
+      font-size: 1em;
+      background: #fffbe8;
+      color: #222;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      font-weight: 500;
+      box-shadow: 0 0px 6px #bfa43a11;
+    }
+    select:focus {
+      border-color: #ff7f50;
+      box-shadow: 0 0px 16px #ffd1a433;
+    }
+    .count-label {
+      font-size: 1em;
+      font-weight: 600;
+      color: #ff7f50;
+      margin-right: 4px;
+      margin-left: 4px;
+    }
+    input[type="number"] {
+      width: 65px;
+      padding: 8px 6px;
+      border-radius: 8px;
+      border: 1.5px solid #ff7f5042;
+      background: #fffbe8;
+      font-size: 1em;
+      color: #222;
+      font-weight: 700;
+      transition: border-color 0.2s;
+      text-align: center;
+      box-shadow: 0 0px 3px #bfa43a11;
+    }
+    input[type="number"]:focus {
+      border-color: #bfa43a;
+    }
+    .submit-btn {
+      width: 100%;
+      margin: 38px 0 0 0;
+      padding: 18px 0;
+      background: linear-gradient(90deg, #ff7f50 70%, #ffd1a4 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.18em;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(255,105,135,0.14);
+      cursor: pointer;
+      transition: background 0.22s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 1px;
+      animation: btnPop 0.7s;
+    }
+    @keyframes btnPop {
+      0% { transform: scale(0.95);}
+      100% { transform: scale(1);}
+    }
+    .submit-btn:active {
+      transform: scale(0.98);
+    }
+    .submit-btn .loader {
+      display: none;
+      position: absolute;
+      right: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      border: 3px solid #ffd1a4;
+      border-top: 3px solid #ff7f50;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .submit-btn.loading .loader {
+      display: inline-block;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg);}
+    }
+    .success-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 97vw;
+      max-width: 400px;
+      background: #fffdf4;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px #ff7f5044;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      padding: 42px 36px 29px 36px;
+      text-align: center;
+      animation: popupFade 0.7s cubic-bezier(.3,1.2,.3,1.1);
+    }
+    @keyframes popupFade {
+      0% {opacity:0; scale:0.8;}
+      100% {opacity:1;scale:1;}
+    }
+    .success-popup .checkmark {
+      font-size: 3em;
+      color: #ff7f50;
+      margin-bottom: 18px;
+      animation: popCheck 0.5s;
+    }
+    @keyframes popCheck {
+      0% {scale:0.1;}
+      100% {scale:1;}
+    }
+    .success-popup .message {
+      font-size: 1.22em;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 14px;
+      letter-spacing: 0.5px;
+    }
+    .success-popup .total-price {
+      font-size: 1.18em;
+      font-weight: 700;
+      color: #ff7f50;
+      margin: 18px 0 16px 0;
+      background: linear-gradient(90deg, #ff7f50 60%, #bfa43a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 1px 8px #ffd1a445;
+      animation: fadeInSub 0.7s;
+    }
+    .success-popup .links {
+      margin-top: 12px;
+      margin-bottom: 10px;
+    }
+    .success-popup .links a {
+      display: inline-block;
+      margin: 0 10px;
+      color: #ff7f50;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1em;
+      border-bottom: 2px solid #ffd1a433;
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .success-popup .links a:hover {
+      color: #bfa43a;
+      border-color: #bfa43a;
+    }
+    .qr-payment {
+      margin: 25px 0 12px 0;
+      text-align: center;
+    }
+    .qr-label {
+      font-weight: 700;
+      color: #bfa43a;
+      margin-bottom: 6px;
+      letter-spacing: 0.7px;
+      font-size: 1.02em;
+      display: block;
+    }
+    .qr-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px #ffd1a433;
+      background: #fffbe8;
+      margin: 0 auto;
+      animation: qrPop 0.7s;
+    }
+    @keyframes qrPop {
+      0% {opacity:0;scale:0.7;}
+      100% {opacity:1;scale:1;}
+    }
+    .close-btn {
+      margin-top: 20px;
+      background: #ff7f50;
+      color: #fff;
+      border: none;
+      border-radius: 11px;
+      padding: 12px 34px;
+      font-size: 1.05em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 2px 10px #ffd1a433;
+    }
+    .close-btn:hover {
+      background: #bfa43a;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 10px 2vw 34px 2vw;}
+      .header {width: 99vw;}
+      .success-popup { padding: 24px 4vw 16px 4vw;}
+      .meal-row { flex-direction: column; gap:4px;}
+      input[type="number"] { width: 90px;}
+      .main-title {font-size: 1.4rem; margin-top: 102px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">Koumatha</div>
+    <div class="sub">Cloud Kitchen – Home Foods</div>
+  </div>
+  <div class="main-title">Weekly Menu Selection</div>
+  <div class="container">
+    <form id="menuForm">
+      <!-- Day Cards will be injected here -->
+    </form>
+    <button type="submit" class="submit-btn" id="submitBtn">
+      <span id="submitText">Submit</span>
+      <span class="loader"></span>
+    </button>
+  </div>
+
+  <!-- Success Popup -->
+  <div class="success-popup" id="successPopup">
+    <div class="checkmark">✔️</div>
+    <div class="message">Order submitted successfully!</div>
+    <div class="total-price" id="totalPrice"></div>
+    <div class="links">
+      <a href="https://wa.me/919876543210" target="_blank">WhatsApp</a>
+      <a href="https://koumatha.com" target="_blank">Website</a>
+    </div>
+    <div class="qr-payment">
+      <span class="qr-label">Scan to Pay</span>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=upi://pay?pa=9962225337@ptaxis" class="qr-img" alt="Scan QR to pay">
+    </div>
+    <button class="close-btn" onclick="closePopup()">Close</button>
+  </div>
+
+  <script>
+    // ----- CONFIG -----
+    const formspaceEndpointUrl = "https://formspree.io/f/xblpyrqe";
+
+    const days = [
+      "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+    ];
+
+    const morningMenuMain = [
+      { name: "Idly", price: 10 },
+      { name: "Dosa", price: 20 },
+      { name: "Poori", price: 20 },
+      { name: "Upma", price: 30 },
+      { name: "Chapathi", price: 20 },
+      { name: "Pongal Sambar", price: 50 }
+    ];
+    const morningMenuNonVegSide = [
+      { name: "Chicken", price: 80 },
+      { name: "Mutton", price: 100 }
+    ];
+
+    const lunchMenuVegMealOptions = [
+      { name: "Veg Meals - Sambar + Poriyal", price: 100 },
+      { name: "Veg Meals - Kara Kozhambu + Poriyal", price: 100 },
+      { name: "Veg Meals - Rasam + Poriyal", price: 100 },
+      { name: "Veg Meals - Curd + Poriyal", price: 100 },
+      { name: "Veg Meals - Poriyal (Veg Side)", price: 100 },
+      { name: "Veg Meals - Kootu + Poriyal", price: 100 },
+      { name: "Mushroom Biryani", price: 120 }
+    ];
+    const lunchMenuNonVeg = [
+      { name: "Non-Veg Meals", price: 100 },
+      { name: "Biryani", price: 150 },
+      { name: "Chicken 65", price: 80 }
+    ];
+
+    const dinnerMenuVeg = [
+      { name: "Chapathi", price: 20 },
+      { name: "Parotta", price: 15 },
+      { name: "Poori", price: 20 },
+      { name: "Dosa", price: 20 }
+    ];
+    const dinnerMenuNonVeg = [
+      { name: "Biryani", price: 150 },
+      { name: "Chicken", price: 70 },
+      { name: "Mutton", price: 100 }
+    ];
+
+    const nonVegDays = [2, 6]; // Wednesday & Sunday
+
+    function buildDropdown(meal, options, dayIdx) {
+      let opts = `<option value="">Select ${meal}</option>`;
+      for (const item of options) {
+        opts += `<option value="${item.name}" data-price="${item.price}">${item.name} ₹${item.price}</option>`;
+      }
+      return `<div class="meal-row">
+        <label class="dropdown-label">${meal}</label>
+        <select name="day${dayIdx}_${meal.toLowerCase().replace(/ /g, '_')}">${opts}</select>
+        <span class="count-label">Qty</span>
+        <input type="number" name="day${dayIdx}_${meal.toLowerCase().replace(/ /g, '_')}_count" min="0" max="20" value="0"/>
+      </div>`;
+    }
+
+    // Build Cards
+    const form = document.getElementById('menuForm');
+    for (let i = 0; i < days.length; i++) {
+      let card = document.createElement('div');
+      card.className = 'day-card collapsed';
+      let isNonVeg = nonVegDays.includes(i);
+      let cardContent = '';
+      cardContent += buildDropdown('Morning Main', morningMenuMain, i);
+      if (isNonVeg) {
+        cardContent += buildDropdown('Morning Non-Veg Side', morningMenuNonVegSide, i);
+      }
+      cardContent += buildDropdown('Lunch Veg Meal', lunchMenuVegMealOptions, i);
+      if (isNonVeg) {
+        cardContent += buildDropdown('Lunch Non-Veg', lunchMenuNonVeg, i);
+      }
+      cardContent += buildDropdown('Dinner', dinnerMenuVeg, i);
+      if (isNonVeg) {
+        cardContent += buildDropdown('Dinner Non-Veg', dinnerMenuNonVeg, i);
+      }
+      card.innerHTML = `
+        <div class="day-header" onclick="toggleCard(this)">
+          <span>${days[i]}${isNonVeg ? ' <span style="color:#d34f4f;font-weight:800;">(Non-Veg)</span>' : ''}</span>
+          <span class="indicator">&#9662;</span>
+        </div>
+        <div class="card-content">
+          ${cardContent}
+        </div>
+      `;
+      form.appendChild(card);
+    }
+
+    window.toggleCard = function(headerElem) {
+      const card = headerElem.parentElement;
+      card.classList.toggle('expanded');
+      card.classList.toggle('collapsed');
+    }
+
+    function gatherSelections() {
+      let total = 0;
+      let daySelections = {};
+      for (let i = 0; i < days.length; i++) {
+        daySelections[days[i]] = {};
+        ['morning_main', 'morning_non-veg_side', 'lunch_veg_meal', 'lunch_non-veg', 'dinner', 'dinner_non-veg'].forEach(slot => {
+          const sel = document.querySelector(`select[name="day${i}_${slot}"]`);
+          const countInput = document.querySelector(`input[name="day${i}_${slot}_count"]`);
+          if (sel && sel.value) {
+            const opt = sel.selectedOptions[0];
+            const price = Number(opt.getAttribute('data-price')) || 0;
+            let count = Number(countInput.value) || 0;
+            if (count < 1) count = 1;
+            total += price * count;
+            let mealName =
+              slot.indexOf("morning") === 0 ? "Morning" :
+              slot.indexOf("lunch") === 0 ? "Lunch" :
+              slot.indexOf("dinner") === 0 ? "Dinner" : slot;
+            if (!daySelections[days[i]][mealName]) daySelections[days[i]][mealName] = [];
+            daySelections[days[i]][mealName].push(`${sel.value} (Qty: ${count})`);
+          }
+        });
+      }
+      return { total, daySelections };
+    }
+
+    function buildOrderSummary(daySelections, total) {
+      let txt = "";
+      Object.keys(daySelections).forEach(day => {
+        txt += `${day}\n`;
+        const meals = daySelections[day];
+        Object.keys(meals).forEach(meal => {
+          txt += `  ${meal}: ${meals[meal].join(", ")}\n`;
+        });
+        txt += "\n";
+      });
+      txt += `Total Price: ₹${total}\n`;
+      return txt;
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const successPopup = document.getElementById('successPopup');
+    const totalPriceElem = document.getElementById('totalPrice');
+    submitBtn.onclick = function(e) {
+      e.preventDefault();
+      if (submitBtn.classList.contains('loading')) return;
+      submitBtn.classList.add('loading');
+      submitText.textContent = "Submitting...";
+
+      const { total, daySelections } = gatherSelections();
+      const payload = {
+        orderSummaryText: buildOrderSummary(daySelections, total),
+        totalPrice: total,
+        meta: {
+          submittedAt: new Date().toISOString()
+        }
+      };
+
+      fetch(formspaceEndpointUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(resp => resp.ok ? resp.json() : Promise.reject())
+      .catch(()=>{}) // Ignore errors for now
+      .finally(() => {
+        submitBtn.classList.remove('loading');
+        submitText.textContent = "Submit";
+        totalPriceElem.textContent = `Total Price: ₹${total}`;
+        successPopup.style.display = 'block';
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+    };
+
+    window.closePopup = function() {
+      successPopup.style.display = 'none';
+      document.getElementById('menuForm').reset();
+      document.querySelectorAll('.day-card').forEach(card=>{
+        card.classList.remove('expanded');
+        card.classList.add('collapsed');
+      });
+    };
+  </script>
+</body>
+</html>
