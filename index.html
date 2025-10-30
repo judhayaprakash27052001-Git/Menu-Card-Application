@@ -414,8 +414,8 @@
     <div class="message">Order submitted successfully!</div>
     <div class="total-price" id="totalPrice"></div>
     <div class="links">
-      <a href="https://wa.me/919876543210" target="_blank">WhatsApp</a>
-      <a href="https://koumatha.com" target="_blank">Website</a>
+      <a href="https://wa.me/919962225337" target="_blank">WhatsApp</a>
+      <a href="https://koumathakitchen-beep.github.io/KoumathaCloudKitchen-App/" target="_blank">Website</a>
     </div>
     <div class="qr-payment">
       <span class="qr-label">Scan to Pay</span>
@@ -440,8 +440,10 @@
       { name: "Chapathi", price: 20 },
       { name: "Pongal Sambar", price: 50 }
     ];
+    // Updated Morning Non-Veg section for Wednesday and Sunday
     const morningNonVeg = [
-      { name: "Chicken", price: 80 }
+      { name: "Chicken Gravy", price: 80 },
+      { name: "Egg Gravy", price: 50 }
     ];
     const lunchVegMenu = [
       { name: "Veg Meals – ₹100", price: 100 }
@@ -460,8 +462,8 @@
       { name: "Dosa", price: 20 }
     ];
     const dinnerNonVeg = [
-      { name: "Biryani", price: 150 },
-      { name: "Chicken", price: 70 }
+      { name: "Egg Gravy", price: 50 },
+      { name: "Chicken Gravy", price: 80 }
     ];
     const eggMenu = [
       { name: "Egg (Boiled/Omelette etc.)", price: 20 }
@@ -490,11 +492,11 @@
         </div>
         <textarea class="section-custom-box" placeholder="Any custom morning request? (optional)" name="morning_custom_${i}"></textarea>
         ${isNonVeg ? `
-        <div class="meal-title meal-title-nonveg">Morning Non-Veg</div>
+        <div class="meal-title meal-title-nonveg">Morning Non-Veg Side Dish</div>
         <div class="menu-multi-row">
           ${renderMultiSelect(morningNonVeg, "morning_nonveg", i)}
         </div>
-        <textarea class="section-custom-box" placeholder="Any custom morning non-veg request? (optional)" name="morning_nonveg_custom_${i}"></textarea>
+        <textarea class="section-custom-box" placeholder="Any custom morning non-veg Side Dish request? (optional)" name="morning_nonveg_custom_${i}"></textarea>
         ` : ""}
         <div class="meal-title">Lunch</div>
         <div class="meal-note">${lunchNote}</div>
@@ -516,11 +518,11 @@
         </div>
         <textarea class="section-custom-box" placeholder="Any custom dinner request? (optional)" name="dinner_custom_${i}"></textarea>
         ${isNonVeg ? `
-        <div class="meal-title meal-title-nonveg">Dinner Non-Veg</div>
+        <div class="meal-title meal-title-nonveg">Dinner Non-Veg Side Dish</div>
         <div class="menu-multi-row">
           ${renderMultiSelect(dinnerNonVeg, "dinner_nonveg", i)}
         </div>
-        <textarea class="section-custom-box" placeholder="Any custom dinner non-veg request? (optional)" name="dinner_nonveg_custom_${i}"></textarea>
+        <textarea class="section-custom-box" placeholder="Any custom dinner non-veg side dish request? (optional)" name="dinner_nonveg_custom_${i}"></textarea>
         ` : ""}
         <div class="meal-title">Egg Section</div>
         <div class="menu-multi-row">
