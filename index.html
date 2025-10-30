@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Weekly Menu Selection | Koumatha</title>
+  <title>Weekly Menu | Koumatha</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     body {
       background: 
         linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.92)),
-        url('https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170') center center/cover no-repeat;
+        url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80') center center/cover no-repeat;
       font-family: 'Montserrat', Arial, sans-serif;
       margin: 0;
       color: #222;
@@ -22,7 +22,7 @@
       left: 50%;
       transform: translateX(-50%);
       width: 94vw;
-      background: rgba(255,255,255,0.98);
+      background: rgba(255,255,255,0.97);
       box-shadow: 0 6px 24px 0 rgba(255,105,135,0.17);
       z-index: 100;
       display: flex;
@@ -88,9 +88,29 @@
       padding: 30px 22px 55px 22px;
       animation: fadeInContainer 1.2s;
     }
-    @keyframes fadeInContainer {
-      0% { opacity: 0; transform: scale(0.97);}
-      100% { opacity: 1; transform: scale(1);}
+    .customer-info {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 22px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .customer-info input {
+      font-size: 1.03em;
+      border-radius: 8px;
+      border: 1.5px solid #bfa43a35;
+      padding: 8px 15px;
+      background: #fffbe8;
+      color: #222;
+      font-family: inherit;
+      font-weight: 500;
+      margin-bottom: 10px;
+      width: 46%;
+      min-width: 150px;
+    }
+    .customer-info input:focus {
+      border-color: #bfa43a;
+      outline: none;
     }
     .day-card {
       border: 1.5px solid #ff7f5025;
@@ -141,62 +161,68 @@
       display: block;
       animation: fadeInCard 0.7s;
     }
-    .meal-row {
+    .meal-title {
+      font-weight: 700;
+      color: #bfa43a;
+      margin: 14px 0 6px 0;
+      font-size: 1em;
+      letter-spacing: 0.5px;
+    }
+    .meal-title-nonveg {
+      color:#d34f4f !important;
+    }
+    .menu-multi-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .menu-item-checkbox {
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-    .dropdown-label {
-      font-weight: 700;
-      font-size: 1.02em;
-      margin-top: 10px;
-      display: block;
-      color: #bfa43a;
-      letter-spacing: 0.6px;
-      min-width: 75px;
-    }
-    select {
-      flex: 2;
-      min-width: 0;
-      margin: 3px 0 0 0;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1.5px solid #bfa43a35;
-      font-size: 1em;
+      gap: 6px;
       background: #fffbe8;
-      color: #222;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      outline: none;
-      font-weight: 500;
-      box-shadow: 0 0px 6px #bfa43a11;
+      border-radius: 8px;
+      padding: 5px 12px;
+      margin-bottom: 6px;
+      border: 1px solid #bfa43a18;
+      min-width: 120px;
+      box-shadow: 0 2px 8px #bfa43a11;
     }
-    select:focus {
-      border-color: #ff7f50;
-      box-shadow: 0 0px 16px #ffd1a433;
-    }
-    .count-label {
-      font-size: 1em;
+    .menu-item-checkbox input[type="number"] {
+      width: 52px;
+      font-size: 0.99em;
       font-weight: 600;
-      color: #ff7f50;
-      margin-right: 4px;
+      padding: 4px 6px;
+      border-radius: 7px;
+      border: 1.5px solid #bfa43a35;
+      background: #fff;
+      color: #222;
       margin-left: 4px;
     }
-    input[type="number"] {
-      width: 65px;
-      padding: 8px 6px;
-      border-radius: 8px;
-      border: 1.5px solid #ff7f5042;
-      background: #fffbe8;
-      font-size: 1em;
-      color: #222;
-      font-weight: 700;
-      transition: border-color 0.2s;
-      text-align: center;
-      box-shadow: 0 0px 3px #bfa43a11;
+    .menu-item-checkbox input[type="checkbox"] {
+      accent-color: #bfa43a;
+      width: 18px;
+      height: 18px;
     }
-    input[type="number"]:focus {
-      border-color: #bfa43a;
+    .meal-note {
+      font-size: 0.97em;
+      color: #555;
+      margin-top: 2px;
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+    .section-custom-box {
+      margin: 8px 0 18px 0;
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1.5px solid #bfa43a35;
+      background: #fffbe8;
+      color: #222;
+      font-family: inherit;
     }
     .submit-btn {
       width: 100%;
@@ -355,9 +381,10 @@
       .container { padding: 10px 2vw 34px 2vw;}
       .header {width: 99vw;}
       .success-popup { padding: 24px 4vw 16px 4vw;}
-      .meal-row { flex-direction: column; gap:4px;}
-      input[type="number"] { width: 90px;}
+      .menu-multi-row { flex-direction: column;}
+      .customer-info input { width: 100%; min-width: 120px;}
       .main-title {font-size: 1.4rem; margin-top: 102px;}
+      .section-custom-box { font-size: 0.98em; }
     }
   </style>
 </head>
@@ -366,9 +393,13 @@
     <div class="logo">Koumatha</div>
     <div class="sub">Cloud Kitchen – Home Foods</div>
   </div>
-  <div class="main-title">Weekly Menu Selection</div>
+  <div class="main-title">Weekly Menu</div>
   <div class="container">
-    <form id="menuForm">
+    <form id="menuForm" autocomplete="off">
+      <div class="customer-info">
+        <input type="text" name="customer_name" placeholder="Your Name" required />
+        <input type="tel" name="customer_mobile" pattern="[0-9]{10,14}" placeholder="Mobile Number" required />
+      </div>
       <!-- Day Cards will be injected here -->
     </form>
     <button type="submit" class="submit-btn" id="submitBtn">
@@ -394,14 +425,14 @@
   </div>
 
   <script>
-    // ----- CONFIG -----
     const formspaceEndpointUrl = "https://formspree.io/f/xblpyrqe";
 
     const days = [
       "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
     ];
+    const nonVegDays = [2, 6]; // Wednesday & Sunday
 
-    const morningMenuMain = [
+    const morningMenu = [
       { name: "Idly", price: 10 },
       { name: "Dosa", price: 20 },
       { name: "Poori", price: 20 },
@@ -409,75 +440,97 @@
       { name: "Chapathi", price: 20 },
       { name: "Pongal Sambar", price: 50 }
     ];
-    const morningMenuNonVegSide = [
-      { name: "Chicken", price: 80 },
-      { name: "Mutton", price: 100 }
+    const morningNonVeg = [
+      { name: "Chicken", price: 80 }
     ];
-
-    const lunchMenuVegMealOptions = [
-      { name: "Veg Meals - Sambar + Poriyal", price: 100 },
-      { name: "Veg Meals - Kara Kozhambu + Poriyal", price: 100 },
-      { name: "Veg Meals - Rasam + Poriyal", price: 100 },
-      { name: "Veg Meals - Curd + Poriyal", price: 100 },
-      { name: "Veg Meals - Poriyal (Veg Side)", price: 100 },
-      { name: "Veg Meals - Kootu + Poriyal", price: 100 },
-      { name: "Mushroom Biryani", price: 120 }
+    const lunchVegMenu = [
+      { name: "Veg Meals – ₹100", price: 100 }
     ];
-    const lunchMenuNonVeg = [
-      { name: "Non-Veg Meals", price: 100 },
+    const lunchNote = "Includes Sambar or Vatha Kozhambu — Rasam, Moor, Appam";
+    const lunchNonVeg = [
+      { name: "Non-Veg Meals – ₹100", price: 100 },
       { name: "Biryani", price: 150 },
       { name: "Chicken 65", price: 80 }
     ];
-
-    const dinnerMenuVeg = [
+    const lunchNonVegNote = "Includes Meen Kulambu, Egg, Rasam";
+    const dinnerMenu = [
       { name: "Chapathi", price: 20 },
       { name: "Parotta", price: 15 },
       { name: "Poori", price: 20 },
       { name: "Dosa", price: 20 }
     ];
-    const dinnerMenuNonVeg = [
+    const dinnerNonVeg = [
       { name: "Biryani", price: 150 },
-      { name: "Chicken", price: 70 },
-      { name: "Mutton", price: 100 }
+      { name: "Chicken", price: 70 }
+    ];
+    const eggMenu = [
+      { name: "Egg (Boiled/Omelette etc.)", price: 20 }
     ];
 
-    const nonVegDays = [2, 6]; // Wednesday & Sunday
-
-    function buildDropdown(meal, options, dayIdx) {
-      let opts = `<option value="">Select ${meal}</option>`;
-      for (const item of options) {
-        opts += `<option value="${item.name}" data-price="${item.price}">${item.name} ₹${item.price}</option>`;
-      }
-      return `<div class="meal-row">
-        <label class="dropdown-label">${meal}</label>
-        <select name="day${dayIdx}_${meal.toLowerCase().replace(/ /g, '_')}">${opts}</select>
-        <span class="count-label">Qty</span>
-        <input type="number" name="day${dayIdx}_${meal.toLowerCase().replace(/ /g, '_')}_count" min="0" max="20" value="0"/>
-      </div>`;
+    function renderMultiSelect(menu, prefix, dayIdx) {
+      return menu.map((item, idx) => `
+        <div class="menu-item-checkbox">
+          <input type="checkbox" id="${prefix}_${dayIdx}_${idx}" name="${prefix}_${dayIdx}_${idx}" data-name="${item.name}" data-price="${item.price}" />
+          <label for="${prefix}_${dayIdx}_${idx}">${item.name} <span style="color:#bfa43a;">₹${item.price}</span></label>
+          <input type="number" min="1" max="20" value="1" name="${prefix}_${dayIdx}_${idx}_qty" />
+        </div>
+      `).join('');
     }
 
     // Build Cards
     const form = document.getElementById('menuForm');
     for (let i = 0; i < days.length; i++) {
+      let isNonVeg = nonVegDays.includes(i);
       let card = document.createElement('div');
       card.className = 'day-card collapsed';
-      let isNonVeg = nonVegDays.includes(i);
-      let cardContent = '';
-      cardContent += buildDropdown('Morning Main', morningMenuMain, i);
-      if (isNonVeg) {
-        cardContent += buildDropdown('Morning Non-Veg Side', morningMenuNonVegSide, i);
-      }
-      cardContent += buildDropdown('Lunch Veg Meal', lunchMenuVegMealOptions, i);
-      if (isNonVeg) {
-        cardContent += buildDropdown('Lunch Non-Veg', lunchMenuNonVeg, i);
-      }
-      cardContent += buildDropdown('Dinner', dinnerMenuVeg, i);
-      if (isNonVeg) {
-        cardContent += buildDropdown('Dinner Non-Veg', dinnerMenuNonVeg, i);
-      }
+      let cardContent = `
+        <div class="meal-title">Morning</div>
+        <div class="menu-multi-row">
+          ${renderMultiSelect(morningMenu, "morning", i)}
+        </div>
+        <textarea class="section-custom-box" placeholder="Any custom morning request? (optional)" name="morning_custom_${i}"></textarea>
+        ${isNonVeg ? `
+        <div class="meal-title meal-title-nonveg">Morning Non-Veg</div>
+        <div class="menu-multi-row">
+          ${renderMultiSelect(morningNonVeg, "morning_nonveg", i)}
+        </div>
+        <textarea class="section-custom-box" placeholder="Any custom morning non-veg request? (optional)" name="morning_nonveg_custom_${i}"></textarea>
+        ` : ""}
+        <div class="meal-title">Lunch</div>
+        <div class="meal-note">${lunchNote}</div>
+        <div class="menu-multi-row">
+          ${renderMultiSelect(lunchVegMenu, "lunch", i)}
+        </div>
+        <textarea class="section-custom-box" placeholder="Any custom lunch request? (optional)" name="lunch_custom_${i}"></textarea>
+        ${isNonVeg ? `
+        <div class="meal-title meal-title-nonveg">Lunch Non-Veg</div>
+        <div class="meal-note">${lunchNonVegNote}</div>
+        <div class="menu-multi-row">
+          ${renderMultiSelect(lunchNonVeg, "lunch_nonveg", i)}
+        </div>
+        <textarea class="section-custom-box" placeholder="Any custom lunch non-veg request? (optional)" name="lunch_nonveg_custom_${i}"></textarea>
+        ` : ""}
+        <div class="meal-title">Dinner</div>
+        <div class="menu-multi-row">
+          ${renderMultiSelect(dinnerMenu, "dinner", i)}
+        </div>
+        <textarea class="section-custom-box" placeholder="Any custom dinner request? (optional)" name="dinner_custom_${i}"></textarea>
+        ${isNonVeg ? `
+        <div class="meal-title meal-title-nonveg">Dinner Non-Veg</div>
+        <div class="menu-multi-row">
+          ${renderMultiSelect(dinnerNonVeg, "dinner_nonveg", i)}
+        </div>
+        <textarea class="section-custom-box" placeholder="Any custom dinner non-veg request? (optional)" name="dinner_nonveg_custom_${i}"></textarea>
+        ` : ""}
+        <div class="meal-title">Egg Section</div>
+        <div class="menu-multi-row">
+          ${renderMultiSelect(eggMenu, "egg", i)}
+        </div>
+        <textarea class="section-custom-box" placeholder="Any custom egg request? (optional)" name="egg_custom_${i}"></textarea>
+      `;
       card.innerHTML = `
         <div class="day-header" onclick="toggleCard(this)">
-          <span>${days[i]}${isNonVeg ? ' <span style="color:#d34f4f;font-weight:800;">(Non-Veg)</span>' : ''}</span>
+          <span>${days[i]}</span>
           <span class="indicator">&#9662;</span>
         </div>
         <div class="card-content">
@@ -493,46 +546,130 @@
       card.classList.toggle('collapsed');
     }
 
-    function gatherSelections() {
+    function gatherOrderSummary() {
+      const name = (document.querySelector('[name="customer_name"]')?.value || '').trim();
+      const mobile = (document.querySelector('[name="customer_mobile"]')?.value || '').trim();
       let total = 0;
-      let daySelections = {};
+      let summary = `Name: ${name}\nMobile: ${mobile}\n\n`;
+
       for (let i = 0; i < days.length; i++) {
-        daySelections[days[i]] = {};
-        ['morning_main', 'morning_non-veg_side', 'lunch_veg_meal', 'lunch_non-veg', 'dinner', 'dinner_non-veg'].forEach(slot => {
-          const sel = document.querySelector(`select[name="day${i}_${slot}"]`);
-          const countInput = document.querySelector(`input[name="day${i}_${slot}_count"]`);
-          if (sel && sel.value) {
-            const opt = sel.selectedOptions[0];
-            const price = Number(opt.getAttribute('data-price')) || 0;
-            let count = Number(countInput.value) || 0;
-            if (count < 1) count = 1;
-            total += price * count;
-            let mealName =
-              slot.indexOf("morning") === 0 ? "Morning" :
-              slot.indexOf("lunch") === 0 ? "Lunch" :
-              slot.indexOf("dinner") === 0 ? "Dinner" : slot;
-            if (!daySelections[days[i]][mealName]) daySelections[days[i]][mealName] = [];
-            daySelections[days[i]][mealName].push(`${sel.value} (Qty: ${count})`);
+        summary += `${days[i]}\n`;
+        let meals = { Morning: [], MorningNonVeg: [], Lunch: [], LunchNonVeg: [], Dinner: [], DinnerNonVeg: [], Egg: [], MorningCustom:"", MorningNonVegCustom:"", LunchCustom:"", LunchNonVegCustom:"", DinnerCustom:"", DinnerNonVegCustom:"", EggCustom:"" };
+        // Morning
+        morningMenu.forEach((item, idx) => {
+          const cb = document.querySelector(`[name="morning_${i}_${idx}"]`);
+          if (cb && cb.checked) {
+            const qty = Math.max(1, Number(document.querySelector(`[name="morning_${i}_${idx}_qty"]`).value));
+            total += item.price * qty;
+            meals.Morning.push(`${item.name} (Qty: ${qty})`);
           }
         });
-      }
-      return { total, daySelections };
-    }
-
-    function buildOrderSummary(daySelections, total) {
-      let txt = "";
-      Object.keys(daySelections).forEach(day => {
-        txt += `${day}\n`;
-        const meals = daySelections[day];
-        Object.keys(meals).forEach(meal => {
-          txt += `  ${meal}: ${meals[meal].join(", ")}\n`;
+        let morningCustom = document.querySelector(`[name="morning_custom_${i}"]`)?.value.trim() || "";
+        if (morningCustom) meals.MorningCustom = morningCustom;
+        if (nonVegDays.includes(i)) {
+          morningNonVeg.forEach((item, idx) => {
+            const cb = document.querySelector(`[name="morning_nonveg_${i}_${idx}"]`);
+            if (cb && cb.checked) {
+              const qty = Math.max(1, Number(document.querySelector(`[name="morning_nonveg_${i}_${idx}_qty"]`).value));
+              total += item.price * qty;
+              meals.MorningNonVeg.push(`${item.name} (Qty: ${qty})`);
+            }
+          });
+          let morningNonVegCustom = document.querySelector(`[name="morning_nonveg_custom_${i}"]`)?.value.trim() || "";
+          if (morningNonVegCustom) meals.MorningNonVegCustom = morningNonVegCustom;
+        }
+        // Lunch
+        lunchVegMenu.forEach((item, idx) => {
+          const cb = document.querySelector(`[name="lunch_${i}_${idx}"]`);
+          if (cb && cb.checked) {
+            const qty = Math.max(1, Number(document.querySelector(`[name="lunch_${i}_${idx}_qty"]`).value));
+            total += item.price * qty;
+            meals.Lunch.push(`${item.name} (Qty: ${qty})`);
+          }
         });
-        txt += "\n";
-      });
-      txt += `Total Price: ₹${total}\n`;
-      return txt;
+        let lunchCustom = document.querySelector(`[name="lunch_custom_${i}"]`)?.value.trim() || "";
+        if (lunchCustom) meals.LunchCustom = lunchCustom;
+        if (nonVegDays.includes(i)) {
+          lunchNonVeg.forEach((item, idx) => {
+            const cb = document.querySelector(`[name="lunch_nonveg_${i}_${idx}"]`);
+            if (cb && cb.checked) {
+              const qty = Math.max(1, Number(document.querySelector(`[name="lunch_nonveg_${i}_${idx}_qty"]`).value));
+              total += item.price * qty;
+              meals.LunchNonVeg.push(`${item.name} (Qty: ${qty})`);
+            }
+          });
+          let lunchNonVegCustom = document.querySelector(`[name="lunch_nonveg_custom_${i}"]`)?.value.trim() || "";
+          if (lunchNonVegCustom) meals.LunchNonVegCustom = lunchNonVegCustom;
+        }
+        // Dinner
+        dinnerMenu.forEach((item, idx) => {
+          const cb = document.querySelector(`[name="dinner_${i}_${idx}"]`);
+          if (cb && cb.checked) {
+            const qty = Math.max(1, Number(document.querySelector(`[name="dinner_${i}_${idx}_qty"]`).value));
+            total += item.price * qty;
+            meals.Dinner.push(`${item.name} (Qty: ${qty})`);
+          }
+        });
+        let dinnerCustom = document.querySelector(`[name="dinner_custom_${i}"]`)?.value.trim() || "";
+        if (dinnerCustom) meals.DinnerCustom = dinnerCustom;
+        if (nonVegDays.includes(i)) {
+          dinnerNonVeg.forEach((item, idx) => {
+            const cb = document.querySelector(`[name="dinner_nonveg_${i}_${idx}"]`);
+            if (cb && cb.checked) {
+              const qty = Math.max(1, Number(document.querySelector(`[name="dinner_nonveg_${i}_${idx}_qty"]`).value));
+              total += item.price * qty;
+              meals.DinnerNonVeg.push(`${item.name} (Qty: ${qty})`);
+            }
+          });
+          let dinnerNonVegCustom = document.querySelector(`[name="dinner_nonveg_custom_${i}"]`)?.value.trim() || "";
+          if (dinnerNonVegCustom) meals.DinnerNonVegCustom = dinnerNonVegCustom;
+        }
+        // Egg Section
+        eggMenu.forEach((item, idx) => {
+          const cb = document.querySelector(`[name="egg_${i}_${idx}"]`);
+          if (cb && cb.checked) {
+            const qty = Math.max(1, Number(document.querySelector(`[name="egg_${i}_${idx}_qty"]`).value));
+            total += item.price * qty;
+            meals.Egg.push(`${item.name} (Qty: ${qty})`);
+          }
+        });
+        let eggCustom = document.querySelector(`[name="egg_custom_${i}"]`)?.value.trim() || "";
+        if (eggCustom) meals.EggCustom = eggCustom;
+        if (meals.Morning.length)
+          summary += `  Morning: ${meals.Morning.join(", ")}\n`;
+        if (meals.MorningCustom)
+          summary += `  Morning Custom: ${meals.MorningCustom}\n`;
+        if (meals.MorningNonVeg.length)
+          summary += `  Morning Non-Veg: ${meals.MorningNonVeg.join(", ")}\n`;
+        if (meals.MorningNonVegCustom)
+          summary += `  Morning Non-Veg Custom: ${meals.MorningNonVegCustom}\n`;
+        if (meals.Lunch.length)
+          summary += `  Lunch: ${meals.Lunch.join(", ")}\n`;
+        if (meals.LunchCustom)
+          summary += `  Lunch Custom: ${meals.LunchCustom}\n`;
+        if (meals.LunchNonVeg.length)
+          summary += `  Lunch Non-Veg: ${meals.LunchNonVeg.join(", ")}\n`;
+        if (meals.LunchNonVegCustom)
+          summary += `  Lunch Non-Veg Custom: ${meals.LunchNonVegCustom}\n`;
+        if (meals.Dinner.length)
+          summary += `  Dinner: ${meals.Dinner.join(", ")}\n`;
+        if (meals.DinnerCustom)
+          summary += `  Dinner Custom: ${meals.DinnerCustom}\n`;
+        if (meals.DinnerNonVeg.length)
+          summary += `  Dinner Non-Veg: ${meals.DinnerNonVeg.join(", ")}\n`;
+        if (meals.DinnerNonVegCustom)
+          summary += `  Dinner Non-Veg Custom: ${meals.DinnerNonVegCustom}\n`;
+        if (meals.Egg.length)
+          summary += `  Egg Section: ${meals.Egg.join(", ")}\n`;
+        if (meals.EggCustom)
+          summary += `  Egg Custom: ${meals.EggCustom}\n`;
+        summary += "\n";
+      }
+      summary += `Total Price: ₹${total}\n`;
+      return { summary, total, name, mobile };
     }
 
+    // Submit Logic
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
     const successPopup = document.getElementById('successPopup');
@@ -540,12 +677,23 @@
     submitBtn.onclick = function(e) {
       e.preventDefault();
       if (submitBtn.classList.contains('loading')) return;
+
+      // Validate customer info
+      const name = document.querySelector('[name="customer_name"]').value.trim();
+      const mobile = document.querySelector('[name="customer_mobile"]').value.trim();
+      if (!name || !mobile) {
+        alert("Please enter your name and mobile number.");
+        return;
+      }
       submitBtn.classList.add('loading');
       submitText.textContent = "Submitting...";
 
-      const { total, daySelections } = gatherSelections();
+      const { summary, total } = gatherOrderSummary();
+
       const payload = {
-        orderSummaryText: buildOrderSummary(daySelections, total),
+        customer_name: name,
+        customer_mobile: mobile,
+        orderSummaryText: summary,
         totalPrice: total,
         meta: {
           submittedAt: new Date().toISOString()
