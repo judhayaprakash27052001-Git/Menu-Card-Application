@@ -1,735 +1,1020 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Weekly Menu | Koumatha</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <title>🍽️ Koumatha Cloud Kitchen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-    body {
-      background: 
-        linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.92)),
-        url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80') center center/cover no-repeat;
-      font-family: 'Montserrat', Arial, sans-serif;
-      margin: 0;
-      color: #222;
-      min-height: 100vh;
-      overflow-x: hidden;
+    :root{
+      --bg-0: #0f1419;
+      --bg-1: #1a1f2e;
+      --accent-1: #ff7f50; /* coral */
+      --accent-2: #ffb347; /* gold */
+      --accent-3: #bfa43a; /* muted gold */
+      --green-1: #66ff00;
+      --glass: rgba(255,255,255,0.04);
+      --header-height: 96px;
+      --radius-lg: 20px;
+      --smooth-ease: cubic-bezier(0.22, 0.95, 0.18, 1);
     }
-    .header {
-      position: fixed;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 94vw;
-      background: rgba(255,255,255,0.97);
-      box-shadow: 0 6px 24px 0 rgba(255,105,135,0.17);
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 32px 0 18px 0;
-      border-radius: 0 0 30px 30px;
-      animation: fadeInDown 1.2s cubic-bezier(.4,.8,.4,1.2);
+
+    /* Reset & base */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;width:100%}
+    body{
+      font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg, var(--bg-0) 0%, var(--bg-1) 50%, var(--bg-0) 100%);
+      color: #e6eef7;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-top: var(--header-height); /* prevent header overlap on mobile/desktop */
+      overflow-x:hidden;
+      transition: background 500ms var(--smooth-ease);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
     }
-    @keyframes fadeInDown {
-      0% { opacity: 0; transform: translateY(-80px) translateX(-50%);}
-      100% { opacity: 1; transform: translateY(0) translateX(-50%);}
+
+    /* subtle radial accents */
+    body::before{
+      content:'';
+      position:fixed;inset:0;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 18% 48%, rgba(255,127,80,0.06) 0%, transparent 45%),
+        radial-gradient(circle at 82% 78%, rgba(191,164,58,0.06) 0%, transparent 45%);
+      z-index:0;
+      animation: subtlePulse 9s ease-in-out infinite;
     }
-    .logo {
-      font-size: 2.4rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: #ff7f50;
-      text-shadow: 0 2px 10px rgba(255,105,135,0.15);
-      margin-bottom: 6px;
-      background: linear-gradient(90deg, #ff7f50 30%, #bfa43a 80%);
+    @keyframes subtlePulse{0%,100%{opacity:1}50%{opacity:0.85}}
+
+    /* Header */
+    .header{
+      position:fixed;top:0;left:0;right:0;
+      height:var(--header-height);
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(15,20,25,0.84);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,127,80,0.12);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+      z-index:1200;
+      transition: transform 350ms var(--smooth-ease), background 350ms var(--smooth-ease);
+    }
+
+    .header-inner{
+      width:100%;
+      max-width:1200px;
+      padding:14px 20px;
+      display:flex;
+      align-items:center;
+      gap:18px;
+      justify-content:space-between;
+      color:var(--accent-2);
+    }
+
+    /* Logo with gold neo / slightly neumorphic gold effect */
+    .logo{
+      font-family: 'Playfair Display', serif;
+      font-weight:800;
+      font-size:1.6rem;
+      letter-spacing:2px;
+      background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 45%, var(--accent-3) 100%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      -webkit-text-fill-color:transparent;
+      text-shadow:
+        0 1px 0 rgba(0,0,0,0.6),
+        0 6px 18px rgba(191,164,58,0.08),
+        0 0 18px rgba(255,127,80,0.08);
+      display:inline-block;
+      transform:translateZ(0);
+    }
+
+    .sub-header{
+      font-size:0.78rem;
+      color: rgba(255,181,71,0.95);
+      font-weight:600;
+      letter-spacing:1.6px;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    /* Announcement / badge (newly added) */
+    .announcement {
+      position:fixed;
+      top: calc(var(--header-height) + 12px);
+      right:22px;
+      z-index:1250;
+      background: linear-gradient(90deg,#07321a,#0b4a2b);
+      color: #d6ffde;
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid rgba(102,255,0,0.12);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      transform: translateY(-6px);
+      opacity:0;
+      transition: transform 300ms var(--smooth-ease), opacity 300ms var(--smooth-ease);
+      max-width:360px;
+      font-weight:700;
+      font-size:0.95rem;
+      pointer-events:auto;
+    }
+    .announcement.show{ transform: translateY(0); opacity:1 }
+    .announcement .ann-icon{
+      width:36px;height:36px;border-radius:8px;background:linear-gradient(90deg,#00ff88,#66ff00);display:flex;align-items:center;justify-content:center;color:#002204;font-weight:900;box-shadow:0 8px 20px rgba(102,255,0,0.12) }
+    }
+    .announcement .ann-body{ display:flex;flex-direction:column; gap:2px; }
+    .announcement .ann-title{ font-size:0.95rem; color:#e9ffef; }
+    .announcement .ann-sub{ font-size:0.78rem; color:rgba(230,255,230,0.8); font-weight:600 }
+    .announcement .ann-close{ margin-left:8px;background:none;border:0;color:rgba(230,255,230,0.9);cursor:pointer;font-size:1.05rem;padding:6px;border-radius:8px }
+    .announcement .ann-close:hover{ background:rgba(255,255,255,0.02) }
+
+    /* Main container */
+    .container{
+      max-width:980px;
+      margin:24px auto 12px;
+      padding:0 20px;
+      position:relative;
+      z-index:1;
+      flex: 1 0 auto;
+    }
+
+    /* Main title area - redesigned */
+    .main-title{
+      text-align:center;
+      margin: 12px auto 28px;
+      display:block;
+      will-change:transform,opacity;
+      transition: transform 500ms var(--smooth-ease), opacity 300ms var(--smooth-ease);
+    }
+
+    /* Gold neo H1 */
+    .main-title h1{
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-weight:900;
+      font-size:3.4rem;
+      line-height:1;
+      margin-bottom:12px;
+      display:inline-block;
+      padding:18px 28px;
+      border-radius:28px;
+      position:relative;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+      -webkit-background-clip: padding-box;
+      color: transparent;
+      background-clip: text;
+      background-image: linear-gradient(90deg, var(--accent-2), var(--accent-1) 40%, var(--accent-3) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: logoPop 1.3s cubic-bezier(.4,2,.4,1.7);
+      text-transform:uppercase;
+      letter-spacing:1.6px;
+      text-shadow:
+        0 2px 0 rgba(0,0,0,0.6),
+        0 6px 28px rgba(191,164,58,0.09),
+        0 0 30px rgba(255,127,80,0.06);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.04),
+        0 10px 30px rgba(0,0,0,0.45);
+      /* subtle 3D bevel using pseudo */
+      transform: translateZ(0);
     }
-    @keyframes logoPop {
-      0% {scale:0.6;}
-      100% {scale:1;}
+
+    /* highlight streak across the letters */
+    .main-title h1::after{
+      content:'';
+      position:absolute;
+      left:12%;
+      top:10%;
+      width:70%;
+      height:28%;
+      transform: skewX(-18deg);
+      pointer-events:none;
+      background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02) 60%, rgba(255,255,255,0.02));
+      mix-blend-mode: overlay;
+      filter: blur(6px);
+      border-radius:14px;
+      opacity:0.6;
     }
-    .sub {
-      font-size: 1.08rem;
-      color: #555;
-      margin-bottom: 8px;
-      font-weight: 400;
-      letter-spacing: 1px;
-      text-shadow: 0 1px 6px rgba(255,105,135,0.08);
-      animation: fadeInSub 1.5s;
+
+    .title-underline{
+      width:180px;height:6px;margin:14px auto 22px;border-radius:10px;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-3));
+      box-shadow:0 8px 30px rgba(255,127,80,0.18);
     }
-    @keyframes fadeInSub {
-      from { opacity: 0;}
-      to { opacity: 1;}
+
+    .title-badge{
+      display:inline-block;
+      background: rgba(255,127,80,0.08);
+      border:1px solid rgba(255,127,80,0.12);
+      color: var(--accent-2);
+      padding:10px 22px;
+      border-radius:40px;
+      font-weight:700;
+      letter-spacing:1px;
+      box-shadow: 0 8px 28px rgba(255,127,80,0.06);
+      font-size:0.95rem;
     }
-    .main-title {
-      margin: 130px auto 22px auto;
-      font-size: 2.1rem;
+
+    /* Form basics */
+    form#menuForm{margin-top:6px}
+    .customer-info{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-bottom:20px;
+      align-items:center;
+    }
+    label.visually-hidden{
+      position:absolute!important;height:1px;width:1px;overflow:hidden;
+      clip:rect(1px,1px,1px,1px);white-space:nowrap;border:0;padding:0;margin:-1px;
+    }
+    .customer-info input[type="text"],
+    .customer-info input[type="tel"]{
+      padding:14px 18px;
+      border-radius:12px;
+      border:1.5px solid rgba(255,127,80,0.14);
+      background: rgba(255,255,255,0.03);
+      color: #eaf2ff;
+      font-size:1rem;
+      transition: all 220ms var(--smooth-ease);
+      outline:none;
+      width:100%;
+      -webkit-appearance:none;
+    }
+    .customer-info input::placeholder{ color: rgba(255,181,71,0.55); font-weight:500 }
+
+    .customer-info input:focus{
+      box-shadow: 0 6px 22px rgba(255,127,80,0.08);
+      border-color: var(--accent-1);
+      transform: translateY(-2px);
+    }
+
+    /* Day cards */
+    .day-card{
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius-lg);
+      margin-bottom:14px;
+      border:1px solid rgba(255,127,80,0.06);
+      overflow:hidden;
+      transition: transform 360ms var(--smooth-ease), box-shadow 360ms var(--smooth-ease), border-color 360ms var(--smooth-ease);
+      will-change: transform;
+    }
+    .day-card:hover{ transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.6); border-color: rgba(255,127,80,0.12) }
+
+    .day-header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:18px 22px;
+      background: linear-gradient(135deg, rgba(255,127,80,0.06), rgba(191,164,58,0.03));
+      color: var(--accent-2);
+      cursor:pointer;
+      font-weight:700;
+      font-size:1.05rem;
+      border-bottom:1px solid rgba(255,127,80,0.04);
+      transition: padding-left 200ms var(--smooth-ease), background 250ms var(--smooth-ease);
+      user-select:none;
+    }
+    .day-header:hover{ padding-left:28px }
+
+    .day-name{ display:flex;align-items:center;gap:12px }
+    .day-icon{ font-size:1.6rem; display:inline-block; animation: dayRotate 8s linear infinite; transform-origin:center center; will-change:transform }
+    @keyframes dayRotate{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+    .indicator{ font-size:1.15rem; color:var(--accent-1); transition: transform 300ms var(--smooth-ease) }
+    .day-card.collapsed .indicator{ transform: rotate(0deg) }
+    .day-card.expanded .indicator{ transform: rotate(-180deg) }
+
+    .card-content{ max-height:0; overflow:hidden; transition:max-height 420ms var(--smooth-ease); }
+    .day-card.expanded .card-content{ max-height:9999px }
+
+    .card-inner{ padding:22px }
+
+    /* Meal sections & titles */
+    .meal-section{ margin-bottom:20px }
+    .meal-title{
+      display:flex;align-items:center;gap:12px;padding-bottom:10px;
+      font-weight:700;font-size:1.02rem;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      border-bottom:2px solid rgba(255,127,80,0.08);
+    }
+    .meal-title.nonveg{ background: linear-gradient(90deg,#ff6b6b,#ff4757); -webkit-background-clip:text; color:transparent }
+    .meal-note{ font-size:0.92rem;color:rgba(255,181,71,0.9); padding:12px;border-radius:8px;background:rgba(255,127,80,0.06); border-left:4px solid var(--accent-1); margin-bottom:12px }
+
+    /* menu grid */
+    .menu-multi-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px }
+    @media (max-width:760px){ .menu-multi-row{ grid-template-columns:1fr } }
+
+    /* item */
+    .menu-item-checkbox{
+      display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;
+      border:1.6px solid rgba(255,127,80,0.08); background: rgba(255,255,255,0.02);
+      transition: transform 220ms var(--smooth-ease), border-color 220ms var(--smooth-ease), box-shadow 220ms var(--smooth-ease);
+      cursor:pointer;
+      flex-wrap:wrap;
+    }
+    .menu-item-checkbox:hover{ transform:translateY(-4px); border-color:rgba(255,127,80,0.16); box-shadow:0 10px 28px rgba(255,127,80,0.06) }
+    .menu-item-checkbox.snack-item{ background: rgba(102,255,0,0.03); border-color: rgba(102,255,0,0.06) }
+    .menu-item-checkbox.snack-item:hover{ border-color: rgba(102,255,0,0.16); box-shadow:0 10px 28px rgba(102,255,0,0.06) }
+
+    .menu-item-checkbox input[type="checkbox"]{ width:20px;height:20px;accent-color:var(--accent-1);cursor:pointer;flex-shrink:0 }
+    .menu-item-checkbox.snack-item input[type="checkbox"]{ accent-color:var(--green-1) }
+
+    .menu-item-checkbox label{ flex:1; display:flex; justify-content:space-between; gap:8px; align-items:center; font-weight:600; font-size:0.98rem; cursor:pointer }
+    .menu-item-checkbox label span:first-child{
+      background: linear-gradient(90deg,var(--accent-2),var(--accent-1));
+      -webkit-background-clip:text;
+      background-clip:text;
+      -webkit-text-fill-color:transparent;
+      font-weight:700;
+    }
+    .menu-item-checkbox.snack-item label span:first-child{ background: linear-gradient(90deg,#00ff88,#66ff00) }
+
+    .menu-item-checkbox .price{ color: var(--accent-2); font-weight:700; white-space:nowrap }
+    .menu-item-checkbox.snack-item .price{ color: #00ff88 }
+
+    /* quantity control */
+    .quantity-control{ display:flex; align-items:center; border-radius:8px; overflow:hidden; width:86px; height:36px; background: rgba(255,127,80,0.08); border:1.6px solid rgba(255,127,80,0.12) }
+    .quantity-control.snack{ background: rgba(102,255,0,0.08); border-color: rgba(102,255,0,0.14) }
+    .qty-btn{ background: rgba(255,127,80,0.14); border:none;color:var(--accent-1); width:28px;height:100%; font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center }
+    .qty-btn.snack{ background: rgba(102,255,0,0.12); color:var(--green-1) }
+    .qty-btn:hover{ transform:scale(1.07) }
+    .qty-input{ width:100%;border:none;background:transparent;color:var(--accent-2);font-weight:700;text-align:center;font-size:0.95rem }
+
+    /* custom box */
+    .section-custom-box{ width:100%; padding:12px;border-radius:10px;border:1.6px solid rgba(255,127,80,0.12); background: rgba(255,127,80,0.04); color:#e6eef7; resize:vertical; min-height:82px }
+    .section-custom-box::placeholder{ color: rgba(255,181,71,0.45) }
+    .section-custom-box:focus{ outline:none; box-shadow:0 10px 28px rgba(255,127,80,0.06); border-color:var(--accent-1) }
+
+    /* submit */
+    .submit-btn{
+      width:100%; padding:14px 18px; border-radius:14px; border:none;
+      background: linear-gradient(90deg,var(--accent-1),var(--accent-2));
+      color:#fff; font-weight:800; font-size:1.04rem; cursor:pointer;
+      box-shadow: 0 14px 44px rgba(255,127,80,0.14); display:flex;align-items:center;justify-content:center;gap:12px; text-transform:uppercase;
+      transition: transform 220ms var(--smooth-ease), box-shadow 220ms var(--smooth-ease), opacity 180ms linear;
+    }
+    .submit-btn:active{ transform:translateY(1px) }
+    .submit-btn.loading{ pointer-events:none; opacity:0.9; }
+
+    .loader{ width:18px;height:18px;border-radius:50%;border:3px solid rgba(255,255,255,0.28);border-top-color:#fff;display:none; animation: loaderSpin 700ms linear infinite }
+    .submit-btn.loading .loader{ display:inline-block }
+    @keyframes loaderSpin{ to{ transform:rotate(360deg) } }
+
+    /* notification (toast style used elsewhere) */
+    .notification{
+      position:fixed;top:110px;right:22px;z-index:2000;
+      background:linear-gradient(135deg,#66ff00,#00ff88);color:#072003;padding:12px 16px;border-radius:12px;
+      box-shadow:0 15px 40px rgba(102,255,0,0.18);display:flex;gap:12px;align-items:center;min-width:240px;
+      transform:translateX(18px);opacity:0; transition: transform 280ms var(--smooth-ease), opacity 280ms var(--smooth-ease);
+    }
+    .notification.show{ transform:translateX(0); opacity:1 }
+    .notification.hide{ transform:translateX(200px); opacity:0 }
+
+    .notif-icon{ font-size:1.25rem }
+    .notif-text{ font-weight:700 }
+    .notif-item-name{ color:#001201 }
+
+    /* popup & overlay */
+    .overlay{ position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9900;opacity:0;visibility:hidden;transition:opacity 280ms ease,visibility 280ms ease }
+    .overlay.show{ opacity:1; visibility:visible }
+
+    .success-popup{
+      position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.88);
+      z-index:9999;width:92%;max-width:640px;border-radius:26px;padding:34px;background:linear-gradient(135deg,#1a2737,#2d3f54);
+      border:2px solid rgba(255,127,80,0.6);box-shadow:0 40px 120px rgba(0,0,0,0.9);opacity:0;visibility:hidden;transition:all 320ms var(--smooth-ease);
+    }
+    .success-popup.show{ opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1) }
+
+    .checkmark{ font-size:3.6rem; display:block; margin-bottom:10px; filter: drop-shadow(0 0 18px rgba(255,127,80,0.45)) }
+    .success-msg{ font-size:1.6rem; font-weight:800; background:linear-gradient(90deg,var(--accent-1),var(--accent-2)); -webkit-background-clip:text;color:transparent;margin-bottom:18px;text-transform:uppercase }
+
+    .total-price-section{ background: linear-gradient(135deg, rgba(255,127,80,0.12), rgba(191,164,58,0.06)); padding:18px;border-radius:18px;border:1.6px solid rgba(255,127,80,0.18); margin-bottom:18px }
+    .price-label{ color:rgba(255,181,71,0.95);font-weight:700;text-transform:uppercase;letter-spacing:1.4px;margin-bottom:8px }
+    .total-price{ font-size:2.6rem;font-weight:900; background: linear-gradient(90deg,var(--accent-2),var(--accent-1)); -webkit-background-clip:text;color:transparent }
+
+    .popup-links{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:16px 0 }
+    .popup-links a{ padding:12px 18px;border-radius:12px;background:linear-gradient(90deg,var(--accent-1),var(--accent-2)); color:#fff;text-decoration:none;font-weight:700; box-shadow:0 10px 30px rgba(255,127,80,0.12) }
+
+    .qr-section{ padding:16px;border-radius:14px;border:1.6px solid rgba(255,127,80,0.12); background: linear-gradient(135deg, rgba(255,127,80,0.06), rgba(191,164,58,0.03)); text-align:center }
+    .qr-img{ width:160px;height:160px;border-radius:12px;border:4px solid rgba(255,127,80,0.6); background:#fff; padding:8px; display:inline-block }
+
+    .close-btn{ margin-top:14px; padding:12px 22px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent-1),var(--accent-2)); color:#fff;font-weight:800;cursor:pointer }
+
+    /* Footer */
+    .site-footer{
+      text-align:center;
+      padding:18px 12px;
+      color: rgba(230,238,255,0.72);
+      font-size:0.95rem;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+      border-top: 1px solid rgba(255,127,80,0.04);
+      z-index:1100;
+      flex-shrink:0;
+    }
+    .site-footer .footer-inner{ display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;max-width:980px;margin:0 auto }
+    .site-footer .brand{ font-weight:700; color:rgba(255,255,255,0.92) }
+    .site-footer .version{ color: rgba(255,181,71,0.95); font-weight:700; font-size:0.92rem }
+    @media(min-width:640px){
+      .site-footer .footer-inner{ flex-direction:row; gap:14px }
+      .site-footer .brand{ margin-right:8px }
+    }
+
+    /* responsive */
+    @media (max-width:760px){
+      :root{ --header-height:84px }
+      .header-inner{ padding:12px 14px }
+      .logo{ font-size:1.25rem }
+      .sub-header{ display:none }
+      .main-title h1{ font-size:2.2rem; padding:12px 18px; border-radius:18px }
+      .main-title{ margin-top:6px }
+      .customer-info{ grid-template-columns:1fr; gap:12px }
+      .container{ padding:0 14px }
+      .header{ backdrop-filter: blur(8px) }
+      .notification{ left:12px; right:12px; top:88px }
+      .success-popup{ padding:20px }
+      .total-price{ font-size:2rem }
+      .announcement{ right:12px; left:12px; top: calc(var(--header-height) + 8px); max-width:unset; justify-content:flex-start }
+    }
+    @media (min-width:1200px){
+      .main-title h1{ font-size:4rem }
+    }
+
+    /* ==========================
+       Snack contrast fixes
+       ==========================
+       The following overrides ensure snack items use a readable solid color
+       instead of relying on the gradient text-clip (which becomes invisible
+       on the neon-green snack background).
+    */
+    .menu-item-checkbox.snack-item label span:first-child {
+      /* remove gradient text-clip and render as normal text for legibility */
+      background: none !important;
+      -webkit-background-clip: initial !important;
+      background-clip: initial !important;
+      -webkit-text-fill-color: initial !important;
+      color: #d8ffd6 !important;        /* soft light green — tweak if needed */
       font-weight: 800;
-      text-align: center;
-      letter-spacing: 1.3px;
-      background: linear-gradient(90deg, #ff7f50 40%, #bfa43a 90%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 2px 10px #ffd1a433;
-      animation: fadeInSub 1.4s;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.55);
     }
-    .container {
-      margin: 0 auto 44px auto;
-      max-width: 600px;
-      background: #ffffffcc;
-      border-radius: 26px;
-      box-shadow: 0 10px 40px rgba(255,105,135,0.13), 0 2px 16px #bfa43a25;
-      padding: 30px 22px 55px 22px;
-      animation: fadeInContainer 1.2s;
+
+    /* Make price, qty and qty buttons readable on snack rows */
+    .menu-item-checkbox.snack-item .price,
+    .menu-item-checkbox.snack-item .qty-input,
+    .menu-item-checkbox.snack-item .qty-btn {
+      color: #d8ffd6 !important;
     }
-    .customer-info {
-      display: flex;
-      gap: 18px;
-      margin-bottom: 22px;
-      align-items: center;
-      flex-wrap: wrap;
+
+    /* Reduce neon intensity slightly to avoid bright rectangular bars */
+    .menu-item-checkbox.snack-item {
+      background: rgba(102,255,0,0.025) !important;
+      border-color: rgba(102,255,0,0.06) !important;
+      box-shadow: none !important;
     }
-    .customer-info input {
-      font-size: 1.03em;
-      border-radius: 8px;
-      border: 1.5px solid #bfa43a35;
-      padding: 8px 15px;
-      background: #fffbe8;
-      color: #222;
-      font-family: inherit;
-      font-weight: 500;
-      margin-bottom: 10px;
-      width: 46%;
-      min-width: 150px;
-    }
-    .customer-info input:focus {
-      border-color: #bfa43a;
-      outline: none;
-    }
-    .day-card {
-      border: 1.5px solid #ff7f5025;
-      border-radius: 18px;
-      margin-bottom: 26px;
-      box-shadow: 0 2px 18px #ffd1a433;
-      background: #fff;
-      transition: box-shadow 0.22s, border-color 0.18s;
-      animation: cardPop 0.7s;
-    }
-    @keyframes cardPop {
-      0% { opacity: 0; transform: scale(0.97);}
-      100% { opacity: 1; transform: scale(1);}
-    }
-    .day-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-      font-size: 1.13rem;
-      padding: 22px 24px;
-      color: #ff7f50;
-      cursor: pointer;
-      border-radius: 18px 18px 0 0;
-      background: linear-gradient(90deg, #fff 75%, #fff8e6 100%);
-      user-select: none;
-      transition: background 0.2s;
-    }
-    .day-header .indicator {
-      font-size: 1.3em;
-      transition: transform 0.3s cubic-bezier(.2,1.5,.6,1);
-    }
-    .day-card.collapsed .indicator {
-      transform: rotate(-90deg);
-    }
-    .card-content {
-      padding: 16px 24px 24px 24px;
-      display: none;
-      background: #ffffffec;
-      border-radius: 0 0 18px 18px;
-      animation: fadeInCard 0.5s;
-    }
-    @keyframes fadeInCard {
-      0% {opacity: 0;}
-      100% {opacity: 1;}
-    }
-    .day-card.expanded .card-content {
-      display: block;
-      animation: fadeInCard 0.7s;
-    }
-    .meal-title {
-      font-weight: 700;
-      color: #bfa43a;
-      margin: 14px 0 6px 0;
-      font-size: 1em;
-      letter-spacing: 0.5px;
-    }
-    .meal-title-nonveg {
-      color:#d34f4f !important;
-    }
-    .menu-multi-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px 8px;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .menu-item-checkbox {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #fffbe8;
-      border-radius: 8px;
-      padding: 5px 12px;
-      margin-bottom: 6px;
-      border: 1px solid #bfa43a18;
-      min-width: 120px;
-      box-shadow: 0 2px 8px #bfa43a11;
-    }
-    .menu-item-checkbox input[type="number"] {
-      width: 52px;
-      font-size: 0.99em;
-      font-weight: 600;
-      padding: 4px 6px;
-      border-radius: 7px;
-      border: 1.5px solid #bfa43a35;
-      background: #fff;
-      color: #222;
-      margin-left: 4px;
-    }
-    .menu-item-checkbox input[type="checkbox"] {
-      accent-color: #bfa43a;
-      width: 18px;
-      height: 18px;
-    }
-    .meal-note {
-      font-size: 0.97em;
-      color: #555;
-      margin-top: 2px;
-      margin-bottom: 8px;
-      font-style: italic;
-    }
-    .section-custom-box {
-      margin: 8px 0 18px 0;
-      width: 100%;
-      padding: 10px;
-      font-size: 1em;
-      border-radius: 8px;
-      border: 1.5px solid #bfa43a35;
-      background: #fffbe8;
-      color: #222;
-      font-family: inherit;
-    }
-    .submit-btn {
-      width: 100%;
-      margin: 38px 0 0 0;
-      padding: 18px 0;
-      background: linear-gradient(90deg, #ff7f50 70%, #ffd1a4 100%);
-      color: #fff;
-      font-weight: 700;
-      font-size: 1.18em;
-      border: none;
-      border-radius: 12px;
-      box-shadow: 0 2px 16px rgba(255,105,135,0.14);
-      cursor: pointer;
-      transition: background 0.22s, transform 0.2s;
-      position: relative;
-      overflow: hidden;
-      letter-spacing: 1px;
-      animation: btnPop 0.7s;
-    }
-    @keyframes btnPop {
-      0% { transform: scale(0.95);}
-      100% { transform: scale(1);}
-    }
-    .submit-btn:active {
-      transform: scale(0.98);
-    }
-    .submit-btn .loader {
-      display: none;
-      position: absolute;
-      right: 22px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 26px;
-      height: 26px;
-      border: 3px solid #ffd1a4;
-      border-top: 3px solid #ff7f50;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    .submit-btn.loading .loader {
-      display: inline-block;
-    }
-    @keyframes spin {
-      100% { transform: rotate(360deg);}
-    }
-    .success-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 97vw;
-      max-width: 400px;
-      background: #fffdf4;
-      border-radius: 24px;
-      box-shadow: 0 10px 40px #ff7f5044;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-      padding: 42px 36px 29px 36px;
-      text-align: center;
-      animation: popupFade 0.7s cubic-bezier(.3,1.2,.3,1.1);
-    }
-    @keyframes popupFade {
-      0% {opacity:0; scale:0.8;}
-      100% {opacity:1;scale:1;}
-    }
-    .success-popup .checkmark {
-      font-size: 3em;
-      color: #ff7f50;
-      margin-bottom: 18px;
-      animation: popCheck 0.5s;
-    }
-    @keyframes popCheck {
-      0% {scale:0.1;}
-      100% {scale:1;}
-    }
-    .success-popup .message {
-      font-size: 1.22em;
-      font-weight: 700;
-      color: #222;
-      margin-bottom: 14px;
-      letter-spacing: 0.5px;
-    }
-    .success-popup .total-price {
-      font-size: 1.18em;
-      font-weight: 700;
-      color: #ff7f50;
-      margin: 18px 0 16px 0;
-      background: linear-gradient(90deg, #ff7f50 60%, #bfa43a 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 1px 8px #ffd1a445;
-      animation: fadeInSub 0.7s;
-    }
-    .success-popup .links {
-      margin-top: 12px;
-      margin-bottom: 10px;
-    }
-    .success-popup .links a {
-      display: inline-block;
-      margin: 0 10px;
-      color: #ff7f50;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 1em;
-      border-bottom: 2px solid #ffd1a433;
-      padding-bottom: 2px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .success-popup .links a:hover {
-      color: #bfa43a;
-      border-color: #bfa43a;
-    }
-    .qr-payment {
-      margin: 25px 0 12px 0;
-      text-align: center;
-    }
-    .qr-label {
-      font-weight: 700;
-      color: #bfa43a;
-      margin-bottom: 6px;
-      letter-spacing: 0.7px;
-      font-size: 1.02em;
-      display: block;
-    }
-    .qr-img {
-      width: 120px;
-      height: 120px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px #ffd1a433;
-      background: #fffbe8;
-      margin: 0 auto;
-      animation: qrPop 0.7s;
-    }
-    @keyframes qrPop {
-      0% {opacity:0;scale:0.7;}
-      100% {opacity:1;scale:1;}
-    }
-    .close-btn {
-      margin-top: 20px;
-      background: #ff7f50;
-      color: #fff;
-      border: none;
-      border-radius: 11px;
-      padding: 12px 34px;
-      font-size: 1.05em;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
-      box-shadow: 0 2px 10px #ffd1a433;
-    }
-    .close-btn:hover {
-      background: #bfa43a;
-    }
-    @media (max-width: 700px) {
-      .container { padding: 10px 2vw 34px 2vw;}
-      .header {width: 99vw;}
-      .success-popup { padding: 24px 4vw 16px 4vw;}
-      .menu-multi-row { flex-direction: column;}
-      .customer-info input { width: 100%; min-width: 120px;}
-      .main-title {font-size: 1.4rem; margin-top: 102px;}
-      .section-custom-box { font-size: 0.98em; }
-    }
+
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="logo">Koumatha</div>
-    <div class="sub">Cloud Kitchen – Home Foods</div>
-  </div>
-  <div class="main-title">Weekly Menu</div>
-  <div class="container">
-    <form id="menuForm" autocomplete="off">
-      <div class="customer-info">
-        <input type="text" name="customer_name" placeholder="Your Name" required />
-        <input type="tel" name="customer_mobile" pattern="[0-9]{10,14}" placeholder="Mobile Number" required />
+  <header class="header" role="banner" aria-label="Main header">
+    <div class="header-inner">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="logo" aria-hidden="true">Koumatha</div>
+        <div class="sub-header">☁️ PREMIUM CLOUD KITCHEN – AUTHENTIC HOME FOODS ☁️</div>
       </div>
-      <!-- Day Cards will be injected here -->
-    </form>
-    <button type="submit" class="submit-btn" id="submitBtn">
-      <span id="submitText">Submit</span>
-      <span class="loader"></span>
-    </button>
+      <nav aria-label="Primary">
+        <!-- small CTA or empty for now -->
+      </nav>
+    </div>
+  </header>
+
+  <!-- Announcement box for newly added section -->
+  <div id="announcement" class="announcement" role="status" aria-live="polite" aria-atomic="true" aria-hidden="true">
+    <div class="ann-icon" aria-hidden="true">✨</div>
+    <div class="ann-body">
+      <div class="ann-title">Newly added</div>
+      <div class="ann-sub">Quick Snacks &amp; Beverages</div>
+    </div>
+    <button class="ann-close" aria-label="Dismiss announcement" id="dismissAnnouncement">✕</button>
   </div>
 
-  <!-- Success Popup -->
-  <div class="success-popup" id="successPopup">
-    <div class="checkmark">✔️</div>
-    <div class="message">Order submitted successfully!</div>
-    <div class="total-price" id="totalPrice"></div>
-    <div class="links">
-      <a href="https://wa.me/919962225337" target="_blank">WhatsApp</a>
-      <a href="https://koumathakitchen-beep.github.io/KoumathaCloudKitchen-App/" target="_blank">Website</a>
+  <main class="container" role="main">
+    <section class="main-title" aria-labelledby="weekly-menu-title">
+      <h1 id="weekly-menu-title">🍽️ WEEKLY MENU</h1>
+      <div class="title-underline" aria-hidden="true"></div>
+      <div class="title-badge">✨ Fresh Daily Prepared ✨</div>
+    </section>
+
+    <form id="menuForm" autocomplete="off" novalidate>
+      <div class="customer-info">
+        <label class="visually-hidden" for="customer_name">Your Full Name</label>
+        <input id="customer_name" name="customer_name" type="text" placeholder="👤 Your Full Name" required aria-required="true" />
+
+        <label class="visually-hidden" for="customer_mobile">Mobile Number</label>
+        <input id="customer_mobile" name="customer_mobile" type="tel" pattern="[0-9]{10,14}" placeholder="📱 Mobile Number" required aria-required="true" inputmode="tel" />
+      </div>
+
+      <div id="dayCardsContainer" aria-live="polite"></div>
+
+      <!-- optional custom notes -->
+      <div style="margin-top:6px">
+        <textarea class="section-custom-box" id="custom_notes" name="custom_notes" placeholder="Any special instructions? (optional)"></textarea>
+      </div>
+    </form>
+
+    <div style="margin-top:16px">
+      <button id="submitBtn" class="submit-btn" type="button" aria-label="Place your order">
+        <span id="submitText">🛒 Place Your Order</span>
+        <span class="loader" aria-hidden="true"></span>
+      </button>
     </div>
-    <div class="qr-payment">
-      <span class="qr-label">Scan to Pay</span>
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=upi://pay?pa=9962225337@ptaxis" class="qr-img" alt="Scan QR to pay">
+  </main>
+
+  <div class="overlay" id="overlay" tabindex="-1" aria-hidden="true"></div>
+
+  <div class="success-popup" id="successPopup" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-hidden="true">
+    <div class="checkmark" aria-hidden="true">✨</div>
+    <div id="successTitle" class="success-msg">Order Placed Successfully!</div>
+
+    <div class="total-price-section" aria-live="polite">
+      <div class="price-label">💰 Total Amount</div>
+      <div class="total-price" id="totalPrice">₹0</div>
     </div>
-    <button class="close-btn" onclick="closePopup()">Close</button>
+
+    <div class="popup-links">
+      <a href="https://wa.me/919962225337" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+      <a href="https://koumathakitchen-beep.github.io/KoumathaCloudKitchen-App/" target="_blank" rel="noopener noreferrer">🌐 Website</a>
+    </div>
+
+    <div class="qr-section">
+      <span class="qr-label" style="display:block;font-weight:700;margin-bottom:10px">📱 Scan to Pay via UPI</span>
+      <!-- QR UPI data properly encoded (no stray spaces) -->
+      <img class="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi%3A%2F%2Fpay%3Fpa%3D9962225337%2540ptaxis%26pn%3DKoumatha%26tn%3DFoodOrder" alt="UPI QR Code (Koumatha)" />
+    </div>
+
+    <div style="text-align:center">
+      <button type="button" class="close-btn" id="closePopupBtn">✓ Close</button>
+    </div>
   </div>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo" aria-label="Footer">
+    <div class="footer-inner">
+      <div class="brand">© koumatha-cloud-kitchen 2025</div>
+      <div class="version">App version V2.1</div>
+    </div>
+  </footer>
 
   <script>
-    const formspaceEndpointUrl = "https://formspree.io/f/xblpyrqe";
+    /* ========= Data & configuration ========= */
+    const formspreeEndpointUrl = "https://formspree.io/f/xblpyrqe"; // kept original endpoint
+    const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+    const dayEmojis = ['🌅','☀️','🌤️','⛅','🌈','🌻','🌙'];
+    const nonVegDays = [2,6]; // Wed & Sun in original
 
-    const days = [
-      "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+    const quickSnacks = [
+      { name: "Bread Omelette", price: 40 },
+      { name: "Bajji", price: 10 },
+      { name: "Onion Bajji", price: 10 },
+      { name: "Potato Bajji", price: 10 },
+      { name: "Bread Bajji", price: 10 },
+      { name: "Samosa", price: 20 }
     ];
-    const nonVegDays = [2, 6]; // Wednesday & Sunday
+
+    const beverages = [
+      { name: "Tea", price: 10 },
+      { name: "Special Tea", price: 15 },
+      { name: "Black Tea", price: 8 },
+      { name: "Black Tea with Ginger", price: 10 },
+      { name: "Lemon Tea", price: 12 },
+      { name: "Green Tea", price: 12 },
+      { name: "Coffee", price: 12 },
+      { name: "Black Coffee", price: 10 },
+      { name: "Chukku Coffee", price: 12 },
+      { name: "Boost", price: 15 },
+      { name: "Horlicks", price: 15 },
+      { name: "Milk", price: 12 },
+      { name: "Ragi Malt", price: 12 }
+    ];
 
     const morningMenu = [
       { name: "Idly", price: 10 },
       { name: "Dosa", price: 20 },
+      { name: "Gheepodidosa", price: 40 },
       { name: "Poori", price: 20 },
       { name: "Upma", price: 30 },
       { name: "Chapathi", price: 20 },
-      { name: "Pongal Sambar", price: 50 }
+      { name: "Pongal Sambar", price: 50 },
+      { name: "Plain Maggie", price: 30 },
+      { name: "Egg Maggie", price: 40 },
+      { name: "Medhu Vadai", price: 10 }
     ];
-    // Updated Morning Non-Veg section for Wednesday and Sunday
+
     const morningNonVeg = [
       { name: "Chicken Gravy", price: 80 },
       { name: "Egg Gravy", price: 50 }
     ];
-    const lunchVegMenu = [
-      { name: "Veg Meals – ₹100", price: 100 }
-    ];
+
+    const lunchVegMenu = [{ name: "Veg Meals", price: 100 }];
     const lunchNote = "Includes Sambar or Vatha Kozhambu — Rasam, Moor, Appam";
+
     const lunchNonVeg = [
-      { name: "Non-Veg Meals – ₹100", price: 100 },
+      { name: "Non-Veg Meals", price: 100 },
       { name: "Biryani", price: 150 },
+      { name: "Chicken Biryani", price: 150 },
+      { name: "Mutton Biryani", price: 250 },
       { name: "Chicken 65", price: 80 }
     ];
     const lunchNonVegNote = "Includes Meen Kulambu, Egg, Rasam";
+
     const dinnerMenu = [
       { name: "Chapathi", price: 20 },
       { name: "Parotta", price: 20 },
+      { name: "Bun Paratha", price: 30 },
       { name: "Poori", price: 20 },
-      { name: "Dosa", price: 20 }
-      
+      { name: "Dosa", price: 20 },
+      { name: "Schezwan Veg Fried Rice", price: 100 },
+      { name: "Chicken Schezwan Fried Rice", price: 110 },
+      { name: "Egg Fried Rice", price: 100 },
+      { name: "Paneer Butter Masala", price: 99 }
     ];
+
     const dinnerNonVeg = [
       { name: "Egg Gravy", price: 50 },
-      { name: "Chicken Gravy", price: 80 }
-    ];
-    const eggMenu = [
-      { name: "Egg (Boiled/Omelette etc.)", price: 20 }
+      { name: "Chicken Gravy", price: 80 },
+      { name: "Chicken Sukka", price: 100 },
+      { name: "Prawn Thokku", price: 99 }
     ];
 
-    function renderMultiSelect(menu, prefix, dayIdx) {
-      return menu.map((item, idx) => `
-        <div class="menu-item-checkbox">
-          <input type="checkbox" id="${prefix}_${dayIdx}_${idx}" name="${prefix}_${dayIdx}_${idx}" data-name="${item.name}" data-price="${item.price}" />
-          <label for="${prefix}_${dayIdx}_${idx}">${item.name} <span style="color:#bfa43a;">₹${item.price}</span></label>
-          <input type="number" min="1" max="20" value="1" name="${prefix}_${dayIdx}_${idx}_qty" />
-        </div>
-      `).join('');
+    const eggMenu = [{ name: "Egg (Boiled/Omelette etc.)", price: 20 }];
+
+    /* ========= Utilities & rendering ========= */
+
+    // show transient notification (non-blocking toast)
+    function showNotification(icon, itemName, category){
+      const n = document.createElement('div');
+      n.className = 'notification';
+      n.innerHTML = `<span class="notif-icon">${icon}</span>
+                     <div class="notif-text"><span class="notif-item-name">${itemName}</span> added to ${category}</div>`;
+      document.body.appendChild(n);
+      // small delay to allow CSS transition
+      requestAnimationFrame(()=> n.classList.add('show'));
+      setTimeout(()=>{ n.classList.remove('show'); n.classList.add('hide'); setTimeout(()=> n.remove(), 380); }, 3000);
     }
 
-    // Build Cards
-    const form = document.getElementById('menuForm');
-    for (let i = 0; i < days.length; i++) {
-      let isNonVeg = nonVegDays.includes(i);
-      let card = document.createElement('div');
+    function renderMultiSelect(menu, prefix, dayIdx, isSnack = false){
+      return menu.map((item, idx) => {
+        const itemId = `${prefix}_${dayIdx}_${idx}`;
+        const qtyId = `${itemId}_qty`;
+        return `
+          <div class="menu-item-checkbox ${isSnack ? 'snack-item' : ''}">
+            <input type="checkbox" id="${itemId}" name="${itemId}" data-name="${item.name}" data-price="${item.price}" onchange="checkboxChanged('${itemId}')" />
+            <label for="${itemId}">
+              <span>${item.name}</span>
+              <span class="price">₹${item.price}</span>
+            </label>
+            <div class="quantity-control ${isSnack ? 'snack' : ''}" aria-hidden="false">
+              <button type="button" class="qty-btn ${isSnack ? 'snack' : ''}" aria-label="Decrease quantity" onclick="decreaseQty('${qtyId}'); return false;">−</button>
+              <input type="text" class="qty-input" id="${qtyId}" value="1" readonly aria-label="Quantity" />
+              <button type="button" class="qty-btn ${isSnack ? 'snack' : ''}" aria-label="Increase quantity" onclick="increaseQty('${qtyId}'); return false;">+</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // global so inline handlers can call
+    window.checkboxChanged = function(itemId){
+      const cb = document.getElementById(itemId);
+      const categoryMap = {
+        'snack':  '☕ Quick Snacks',
+        'bev': '☕ Beverages',
+        'morning': '🌅 Morning',
+        'morning_nonveg': '🍗 Morning Non-Veg',
+        'lunch': '🍽️ Lunch',
+        'lunch_nonveg': '🍗 Lunch Non-Veg',
+        'dinner': '🌙 Dinner',
+        'dinner_nonveg': '🍗 Dinner Non-Veg',
+        'egg': '🥚 Egg Section'
+      };
+      const categoryKey = Object.keys(categoryMap).find(k => itemId.startsWith(k + '_')) || 'order';
+      const categoryName = categoryMap[categoryKey] || 'Order';
+      if(cb && cb.checked){
+        showNotification('🎉', cb.dataset.name, categoryName);
+      }
+    };
+
+    window.decreaseQty = function(elementId){
+      const input = document.getElementById(elementId);
+      if(!input) return;
+      const v = Math.max(1, parseInt(input.value||"1",10));
+      if(v>1) input.value = v-1;
+    };
+    window.increaseQty = function(elementId){
+      const input = document.getElementById(elementId);
+      if(!input) return;
+      const v = Math.max(1, parseInt(input.value||"1",10));
+      if(v<20) input.value = v+1;
+    };
+
+    // build day cards
+    const container = document.getElementById('dayCardsContainer');
+    for(let i=0;i<days.length;i++){
+      const isNonVeg = nonVegDays.includes(i);
+      const card = document.createElement('div');
       card.className = 'day-card collapsed';
-      let cardContent = `
-        <div class="meal-title">Morning</div>
-        <div class="menu-multi-row">
-          ${renderMultiSelect(morningMenu, "morning", i)}
+      card.style.animationDelay = `${i * 0.06}s`;
+
+      const cardContent = `
+        <div class="meal-section">
+          <div class="meal-title quick-snacks">☕ Quick Snacks & Beverages</div>
+          <div class="menu-multi-row">
+            ${renderMultiSelect(quickSnacks,'snack',i,true)}
+          </div>
+          <div style="height:8px"></div>
+          <div class="menu-multi-row">
+            ${renderMultiSelect(beverages,'bev',i,true)}
+          </div>
         </div>
-        <textarea class="section-custom-box" placeholder="Any custom morning request? (optional)" name="morning_custom_${i}"></textarea>
-        ${isNonVeg ? `
-        <div class="meal-title meal-title-nonveg">Morning Non-Veg Side Dish</div>
-        <div class="menu-multi-row">
-          ${renderMultiSelect(morningNonVeg, "morning_nonveg", i)}
+
+        <div class="meal-section">
+          <div class="meal-title">🌅 Morning</div>
+          <div class="menu-multi-row">${renderMultiSelect(morningMenu,'morning',i,false)}</div>
         </div>
-        <textarea class="section-custom-box" placeholder="Any custom morning non-veg Side Dish request? (optional)" name="morning_nonveg_custom_${i}"></textarea>
-        ` : ""}
-        <div class="meal-title">Lunch</div>
-        <div class="meal-note">${lunchNote}</div>
-        <div class="menu-multi-row">
-          ${renderMultiSelect(lunchVegMenu, "lunch", i)}
+
+        ${isNonVeg?`<div class="meal-section">
+          <div class="meal-title nonveg">🍗 Morning Non-Veg</div>
+          <div class="menu-multi-row">${renderMultiSelect(morningNonVeg,'morning_nonveg',i,false)}</div>
+        </div>`:''}
+
+        <div class="meal-section">
+          <div class="meal-title">🍽️ Lunch</div>
+          <div class="meal-note">${lunchNote}</div>
+          <div class="menu-multi-row">${renderMultiSelect(lunchVegMenu,'lunch',i,false)}</div>
         </div>
-        <textarea class="section-custom-box" placeholder="Any custom lunch request? (optional)" name="lunch_custom_${i}"></textarea>
-        ${isNonVeg ? `
-        <div class="meal-title meal-title-nonveg">Lunch Non-Veg</div>
-        <div class="meal-note">${lunchNonVegNote}</div>
-        <div class="menu-multi-row">
-          ${renderMultiSelect(lunchNonVeg, "lunch_nonveg", i)}
+
+        ${isNonVeg?`<div class="meal-section">
+          <div class="meal-title nonveg">🍗 Lunch Non-Veg</div>
+          <div class="meal-note">${lunchNonVegNote}</div>
+          <div class="menu-multi-row">${renderMultiSelect(lunchNonVeg,'lunch_nonveg',i,false)}</div>
+        </div>`:''}
+
+        <div class="meal-section">
+          <div class="meal-title">🌙 Dinner</div>
+          <div class="menu-multi-row">${renderMultiSelect(dinnerMenu,'dinner',i,false)}</div>
         </div>
-        <textarea class="section-custom-box" placeholder="Any custom lunch non-veg request? (optional)" name="lunch_nonveg_custom_${i}"></textarea>
-        ` : ""}
-        <div class="meal-title">Dinner</div>
-        <div class="menu-multi-row">
-          ${renderMultiSelect(dinnerMenu, "dinner", i)}
+
+        ${isNonVeg?`<div class="meal-section">
+          <div class="meal-title nonveg">🍗 Dinner Non-Veg</div>
+          <div class="menu-multi-row">${renderMultiSelect(dinnerNonVeg,'dinner_nonveg',i,false)}</div>
+        </div>`:''}
+
+        <div class="meal-section">
+          <div class="meal-title">🥚 Egg Section</div>
+          <div class="menu-multi-row">${renderMultiSelect(eggMenu,'egg',i,false)}</div>
         </div>
-        <textarea class="section-custom-box" placeholder="Any custom dinner request? (optional)" name="dinner_custom_${i}"></textarea>
-        ${isNonVeg ? `
-        <div class="meal-title meal-title-nonveg">Dinner Non-Veg Side Dish</div>
-        <div class="menu-multi-row">
-          ${renderMultiSelect(dinnerNonVeg, "dinner_nonveg", i)}
-        </div>
-        <textarea class="section-custom-box" placeholder="Any custom dinner non-veg side dish request? (optional)" name="dinner_nonveg_custom_${i}"></textarea>
-        ` : ""}
-        <div class="meal-title">Egg Section</div>
-        <div class="menu-multi-row">
-          ${renderMultiSelect(eggMenu, "egg", i)}
-        </div>
-        <textarea class="section-custom-box" placeholder="Any custom egg request? (optional)" name="egg_custom_${i}"></textarea>
       `;
+
       card.innerHTML = `
-        <div class="day-header" onclick="toggleCard(this)">
-          <span>${days[i]}</span>
-          <span class="indicator">&#9662;</span>
+        <div class="day-header" onclick="toggleCard(this)" role="button" aria-expanded="false">
+          <span class="day-name">
+            <span class="day-icon">${dayEmojis[i]}</span>
+            <span>${days[i]}</span>
+          </span>
+          <span class="indicator">▼</span>
         </div>
         <div class="card-content">
-          ${cardContent}
+          <div class="card-inner">${cardContent}</div>
         </div>
       `;
-      form.appendChild(card);
+      container.appendChild(card);
     }
 
-    window.toggleCard = function(headerElem) {
+    // toggle card open/close
+    window.toggleCard = function(headerElem){
       const card = headerElem.parentElement;
-      card.classList.toggle('expanded');
-      card.classList.toggle('collapsed');
-    }
+      const expanded = card.classList.toggle('expanded');
+      card.classList.toggle('collapsed', !expanded);
+      headerElem.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      // smooth, ensure max-height transition works:
+      const content = card.querySelector('.card-content');
+      if(expanded){
+        content.style.maxHeight = content.scrollHeight + 'px';
+      } else {
+        content.style.maxHeight = '0px';
+      }
+    };
 
-    function gatherOrderSummary() {
-      const name = (document.querySelector('[name="customer_name"]')?.value || '').trim();
-      const mobile = (document.querySelector('[name="customer_mobile"]')?.value || '').trim();
+    // gather order
+    function gatherOrderSummary(){
+      const name = (document.getElementById('customer_name')?.value || '').trim();
+      const mobile = (document.getElementById('customer_mobile')?.value || '').trim();
       let total = 0;
       let summary = `Name: ${name}\nMobile: ${mobile}\n\n`;
 
-      for (let i = 0; i < days.length; i++) {
-        summary += `${days[i]}\n`;
-        let meals = { Morning: [], MorningNonVeg: [], Lunch: [], LunchNonVeg: [], Dinner: [], DinnerNonVeg: [], Egg: [], MorningCustom:"", MorningNonVegCustom:"", LunchCustom:"", LunchNonVegCustom:"", DinnerCustom:"", DinnerNonVegCustom:"", EggCustom:"" };
-        // Morning
-        morningMenu.forEach((item, idx) => {
-          const cb = document.querySelector(`[name="morning_${i}_${idx}"]`);
-          if (cb && cb.checked) {
-            const qty = Math.max(1, Number(document.querySelector(`[name="morning_${i}_${idx}_qty"]`).value));
-            total += item.price * qty;
-            meals.Morning.push(`${item.name} (Qty: ${qty})`);
-          }
-        });
-        let morningCustom = document.querySelector(`[name="morning_custom_${i}"]`)?.value.trim() || "";
-        if (morningCustom) meals.MorningCustom = morningCustom;
-        if (nonVegDays.includes(i)) {
-          morningNonVeg.forEach((item, idx) => {
-            const cb = document.querySelector(`[name="morning_nonveg_${i}_${idx}"]`);
-            if (cb && cb.checked) {
-              const qty = Math.max(1, Number(document.querySelector(`[name="morning_nonveg_${i}_${idx}_qty"]`).value));
+      const menus = [
+        { menu: quickSnacks, prefix: 'snack_' },
+        { menu: beverages, prefix: 'bev_' },
+        { menu: morningMenu, prefix: 'morning_' },
+        { menu: morningNonVeg, prefix: 'morning_nonveg_' },
+        { menu: lunchVegMenu, prefix: 'lunch_' },
+        { menu: lunchNonVeg, prefix: 'lunch_nonveg_' },
+        { menu: dinnerMenu, prefix: 'dinner_' },
+        { menu: dinnerNonVeg, prefix: 'dinner_nonveg_' },
+        { menu: eggMenu, prefix: 'egg_' }
+      ];
+
+      for(let d=0;d<days.length;d++){
+        let dayLines = [];
+        menus.forEach(({menu,prefix})=>{
+          menu.forEach((item, idx)=>{
+            const cbName = `${prefix}${d}_${idx}`;
+            const qtyName = `${cbName}_qty`;
+            const cb = document.querySelector(`[name="${cbName}"]`);
+            const qtyInput = document.getElementById(qtyName);
+            if(cb && cb.checked && qtyInput){
+              const qty = Math.max(1, parseInt(qtyInput.value||"1",10));
               total += item.price * qty;
-              meals.MorningNonVeg.push(`${item.name} (Qty: ${qty})`);
+              dayLines.push(`  ${item.name} (x${qty})`);
             }
           });
-          let morningNonVegCustom = document.querySelector(`[name="morning_nonveg_custom_${i}"]`)?.value.trim() || "";
-          if (morningNonVegCustom) meals.MorningNonVegCustom = morningNonVegCustom;
-        }
-        // Lunch
-        lunchVegMenu.forEach((item, idx) => {
-          const cb = document.querySelector(`[name="lunch_${i}_${idx}"]`);
-          if (cb && cb.checked) {
-            const qty = Math.max(1, Number(document.querySelector(`[name="lunch_${i}_${idx}_qty"]`).value));
-            total += item.price * qty;
-            meals.Lunch.push(`${item.name} (Qty: ${qty})`);
-          }
         });
-        let lunchCustom = document.querySelector(`[name="lunch_custom_${i}"]`)?.value.trim() || "";
-        if (lunchCustom) meals.LunchCustom = lunchCustom;
-        if (nonVegDays.includes(i)) {
-          lunchNonVeg.forEach((item, idx) => {
-            const cb = document.querySelector(`[name="lunch_nonveg_${i}_${idx}"]`);
-            if (cb && cb.checked) {
-              const qty = Math.max(1, Number(document.querySelector(`[name="lunch_nonveg_${i}_${idx}_qty"]`).value));
-              total += item.price * qty;
-              meals.LunchNonVeg.push(`${item.name} (Qty: ${qty})`);
-            }
-          });
-          let lunchNonVegCustom = document.querySelector(`[name="lunch_nonveg_custom_${i}"]`)?.value.trim() || "";
-          if (lunchNonVegCustom) meals.LunchNonVegCustom = lunchNonVegCustom;
-        }
-        // Dinner
-        dinnerMenu.forEach((item, idx) => {
-          const cb = document.querySelector(`[name="dinner_${i}_${idx}"]`);
-          if (cb && cb.checked) {
-            const qty = Math.max(1, Number(document.querySelector(`[name="dinner_${i}_${idx}_qty"]`).value));
-            total += item.price * qty;
-            meals.Dinner.push(`${item.name} (Qty: ${qty})`);
-          }
-        });
-        let dinnerCustom = document.querySelector(`[name="dinner_custom_${i}"]`)?.value.trim() || "";
-        if (dinnerCustom) meals.DinnerCustom = dinnerCustom;
-        if (nonVegDays.includes(i)) {
-          dinnerNonVeg.forEach((item, idx) => {
-            const cb = document.querySelector(`[name="dinner_nonveg_${i}_${idx}"]`);
-            if (cb && cb.checked) {
-              const qty = Math.max(1, Number(document.querySelector(`[name="dinner_nonveg_${i}_${idx}_qty"]`).value));
-              total += item.price * qty;
-              meals.DinnerNonVeg.push(`${item.name} (Qty: ${qty})`);
-            }
-          });
-          let dinnerNonVegCustom = document.querySelector(`[name="dinner_nonveg_custom_${i}"]`)?.value.trim() || "";
-          if (dinnerNonVegCustom) meals.DinnerNonVegCustom = dinnerNonVegCustom;
-        }
-        // Egg Section
-        eggMenu.forEach((item, idx) => {
-          const cb = document.querySelector(`[name="egg_${i}_${idx}"]`);
-          if (cb && cb.checked) {
-            const qty = Math.max(1, Number(document.querySelector(`[name="egg_${i}_${idx}_qty"]`).value));
-            total += item.price * qty;
-            meals.Egg.push(`${item.name} (Qty: ${qty})`);
-          }
-        });
-        let eggCustom = document.querySelector(`[name="egg_custom_${i}"]`)?.value.trim() || "";
-        if (eggCustom) meals.EggCustom = eggCustom;
-        if (meals.Morning.length)
-          summary += `  Morning: ${meals.Morning.join(", ")}\n`;
-        if (meals.MorningCustom)
-          summary += `  Morning Custom: ${meals.MorningCustom}\n`;
-        if (meals.MorningNonVeg.length)
-          summary += `  Morning Non-Veg: ${meals.MorningNonVeg.join(", ")}\n`;
-        if (meals.MorningNonVegCustom)
-          summary += `  Morning Non-Veg Custom: ${meals.MorningNonVegCustom}\n`;
-        if (meals.Lunch.length)
-          summary += `  Lunch: ${meals.Lunch.join(", ")}\n`;
-        if (meals.LunchCustom)
-          summary += `  Lunch Custom: ${meals.LunchCustom}\n`;
-        if (meals.LunchNonVeg.length)
-          summary += `  Lunch Non-Veg: ${meals.LunchNonVeg.join(", ")}\n`;
-        if (meals.LunchNonVegCustom)
-          summary += `  Lunch Non-Veg Custom: ${meals.LunchNonVegCustom}\n`;
-        if (meals.Dinner.length)
-          summary += `  Dinner: ${meals.Dinner.join(", ")}\n`;
-        if (meals.DinnerCustom)
-          summary += `  Dinner Custom: ${meals.DinnerCustom}\n`;
-        if (meals.DinnerNonVeg.length)
-          summary += `  Dinner Non-Veg: ${meals.DinnerNonVeg.join(", ")}\n`;
-        if (meals.DinnerNonVegCustom)
-          summary += `  Dinner Non-Veg Custom: ${meals.DinnerNonVegCustom}\n`;
-        if (meals.Egg.length)
-          summary += `  Egg Section: ${meals.Egg.join(", ")}\n`;
-        if (meals.EggCustom)
-          summary += `  Egg Custom: ${meals.EggCustom}\n`;
-        summary += "\n";
+        if(dayLines.length) summary += `${days[d]}\n${dayLines.join('\n')}\n\n`;
       }
-      summary += `Total Price: ₹${total}\n`;
+
+      summary += `Total: ₹${total}\n`;
       return { summary, total, name, mobile };
     }
 
-    // Submit Logic
+    /* ====== submission & UI interactions ====== */
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
+    const loader = submitBtn.querySelector('.loader');
     const successPopup = document.getElementById('successPopup');
+    const overlay = document.getElementById('overlay');
     const totalPriceElem = document.getElementById('totalPrice');
-    submitBtn.onclick = function(e) {
-      e.preventDefault();
-      if (submitBtn.classList.contains('loading')) return;
+    const closePopupBtn = document.getElementById('closePopupBtn');
 
-      // Validate customer info
-      const name = document.querySelector('[name="customer_name"]').value.trim();
-      const mobile = document.querySelector('[name="customer_mobile"]').value.trim();
-      if (!name || !mobile) {
-        alert("Please enter your name and mobile number.");
+    function setLoading(on){
+      if(on){
+        submitBtn.classList.add('loading');
+        submitText.textContent = "Processing...";
+      } else {
+        submitBtn.classList.remove('loading');
+        submitText.textContent = "🛒 Place Your Order";
+      }
+    }
+
+    // show success dialog
+    function showSuccess(total){
+      totalPriceElem.textContent = `₹${total}`;
+      overlay.classList.add('show');
+      successPopup.classList.add('show');
+      successPopup.setAttribute('aria-hidden', 'false');
+      overlay.setAttribute('aria-hidden','false');
+      // focus management
+      closePopupBtn.focus();
+    }
+
+    function showError(message){
+      // small error notification
+      const err = document.createElement('div');
+      err.className = 'notification';
+      err.style.background = 'linear-gradient(135deg,#ff7f50,#ffb347)';
+      err.innerHTML = `<span class="notif-icon">⚠️</span><div class="notif-text">${message}</div>`;
+      document.body.appendChild(err);
+      requestAnimationFrame(()=> err.classList.add('show'));
+      setTimeout(()=>{ err.classList.remove('show'); err.classList.add('hide'); setTimeout(()=> err.remove(),380) }, 3500);
+    }
+
+    submitBtn.addEventListener('click', async function(e){
+      e.preventDefault();
+      const name = document.getElementById('customer_name').value.trim();
+      const mobile = document.getElementById('customer_mobile').value.trim();
+      if(!name || !mobile){
+        showError('Please enter name and mobile number');
         return;
       }
-      submitBtn.classList.add('loading');
-      submitText.textContent = "Submitting...";
-
-      const { summary, total } = gatherOrderSummary();
-
-      const payload = {
-        customer_name: name,
-        customer_mobile: mobile,
-        orderSummaryText: summary,
-        totalPrice: total,
-        meta: {
-          submittedAt: new Date().toISOString()
+      setLoading(true);
+      const result = gatherOrderSummary();
+      // POST to Formspree — handle non-OK responses properly
+      try{
+        const resp = await fetch(formspreeEndpointUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            customer_name: result.name,
+            customer_mobile: result.mobile,
+            orderSummaryText: result.summary,
+            totalPrice: result.total,
+            meta: { submittedAt: new Date().toISOString() }
+          })
+        });
+        if(!resp.ok){
+          // server returned an error, show error but still show popup if you want. Here show error and stop.
+          showError('Could not submit order — please try again');
+          setLoading(false);
+          return;
         }
-      };
+        // success
+        setLoading(false);
+        showSuccess(result.total);
+      } catch(err){
+        // network error
+        setLoading(false);
+        showError('Network error — check connection and try again');
+        console.error(err);
+      }
+    });
 
-      fetch(formspaceEndpointUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      })
-      .then(resp => resp.ok ? resp.json() : Promise.reject())
-      .catch(()=>{}) // Ignore errors for now
-      .finally(() => {
-        submitBtn.classList.remove('loading');
-        submitText.textContent = "Submit";
-        totalPriceElem.textContent = `Total Price: ₹${total}`;
-        successPopup.style.display = 'block';
-        window.scrollTo({top:0, behavior:'smooth'});
-      });
-    };
-
-    window.closePopup = function() {
-      successPopup.style.display = 'none';
+    function closePopup(){
+      successPopup.classList.remove('show');
+      successPopup.setAttribute('aria-hidden', 'true');
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-hidden', 'true');
+      // reset form (preserve name/mobile? currently reset everything)
       document.getElementById('menuForm').reset();
-      document.querySelectorAll('.day-card').forEach(card=>{
-        card.classList.remove('expanded');
-        card.classList.add('collapsed');
+      // collapse all cards
+      document.querySelectorAll('.day-card').forEach(c=>{
+        c.classList.remove('expanded');
+        c.classList.add('collapsed');
+        const content = c.querySelector('.card-content');
+        if(content) content.style.maxHeight = '0px';
       });
-    };
+      // bring focus back to submit for quick repeat
+      submitBtn.focus();
+    }
+
+    closePopupBtn.addEventListener('click', closePopup);
+    overlay.addEventListener('click', (e) => { if(e.target === overlay) closePopup(); });
+
+    // small accessibility: allow Esc to close popup
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){
+        if(successPopup.classList.contains('show')) closePopup();
+      }
+    });
+
+    // improve performance on mobile: passive listeners for touch scroll
+    try{
+      window.addEventListener('touchstart', function(){}, {passive:true});
+      window.addEventListener('touchmove', function(){}, {passive:true});
+    }catch(e){ /* ignore */ }
+
+    // a11y: ensure header collapse on scroll (small UX improvement)
+    let lastScroll = 0;
+    const headerEl = document.querySelector('.header');
+    window.addEventListener('scroll', () => {
+      const s = window.scrollY || 0;
+      if(s > lastScroll && s > 120){
+        // scrolling down -> hide a bit
+        headerEl.style.transform = 'translateY(-20%)';
+      } else {
+        headerEl.style.transform = 'translateY(0)';
+      }
+      lastScroll = s;
+    }, { passive: true });
+
+    /* ===== Announcement logic =====
+       Shows the "Newly added Quick Snacks & Beverages" announcement
+       once per page load. User can dismiss it; dismissal is remembered
+       during the session via sessionStorage.
+    */
+    (function manageAnnouncement(){
+      const ANN_KEY = 'koumatha_announcement_dismissed_v1';
+      const ann = document.getElementById('announcement');
+      const btn = document.getElementById('dismissAnnouncement');
+
+      function showAnn(){
+        ann.setAttribute('aria-hidden', 'false');
+        ann.classList.add('show');
+      }
+      function hideAnn(){
+        ann.classList.remove('show');
+        ann.setAttribute('aria-hidden', 'true');
+      }
+
+      // if the user already dismissed in this session, don't show
+      const dismissed = sessionStorage.getItem(ANN_KEY);
+      if(!dismissed){
+        // small delay so it doesn't clash with header paint
+        setTimeout(showAnn, 450);
+      }
+
+      btn.addEventListener('click', ()=>{
+        hideAnn();
+        try{ sessionStorage.setItem(ANN_KEY, '1'); }catch(e){}
+      });
+
+      // auto-hide after 6s unless dismissed
+      setTimeout(()=>{
+        if(!sessionStorage.getItem(ANN_KEY)) hideAnn();
+      }, 6500);
+    })();
+
   </script>
 </body>
 </html>
-
-
-
