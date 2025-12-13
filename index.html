@@ -294,7 +294,7 @@
     .card-inner{ padding:22px }
 
     /* Meal sections & titles */
-    .meal-section{ margin-bottom:20px }
+    .meal-section{ margin-bottom:12px }
     .meal-title{
       display:flex;align-items:center;gap:12px;padding-bottom:10px;
       font-weight:700;font-size:1.02rem;
@@ -346,7 +346,7 @@
     .qty-input{ width:100%;border:none;background:transparent;color:var(--accent-2);font-weight:700;text-align:center;font-size:0.95rem }
 
     /* custom box */
-    .section-custom-box{ width:100%; padding:12px;border-radius:10px;border:1.6px solid rgba(255,127,80,0.12); background: rgba(255,127,80,0.04); color:#e6eef7; resize:vertical; min-height:82px }
+    .section-custom-box{ width:100%; padding:12px;border-radius:10px;border:1.6px solid rgba(255,127,80,0.12); background: rgba(255,127,80,0.04); color:#e6eef7; resize:vertical; min-height:72px }
     .section-custom-box::placeholder{ color: rgba(255,181,71,0.45) }
     .section-custom-box:focus{ outline:none; box-shadow:0 10px 28px rgba(255,127,80,0.06); border-color:var(--accent-1) }
 
@@ -447,29 +447,21 @@
     /* ==========================
        Snack contrast fixes
        ==========================
-       The following overrides ensure snack items use a readable solid color
-       instead of relying on the gradient text-clip (which becomes invisible
-       on the neon-green snack background).
     */
     .menu-item-checkbox.snack-item label span:first-child {
-      /* remove gradient text-clip and render as normal text for legibility */
       background: none !important;
       -webkit-background-clip: initial !important;
       background-clip: initial !important;
       -webkit-text-fill-color: initial !important;
-      color: #d8ffd6 !important;        /* soft light green — tweak if needed */
+      color: #d8ffd6 !important;
       font-weight: 800;
       text-shadow: 0 1px 0 rgba(0,0,0,0.55);
     }
-
-    /* Make price, qty and qty buttons readable on snack rows */
     .menu-item-checkbox.snack-item .price,
     .menu-item-checkbox.snack-item .qty-input,
     .menu-item-checkbox.snack-item .qty-btn {
       color: #d8ffd6 !important;
     }
-
-    /* Reduce neon intensity slightly to avoid bright rectangular bars */
     .menu-item-checkbox.snack-item {
       background: rgba(102,255,0,0.025) !important;
       border-color: rgba(102,255,0,0.06) !important;
@@ -519,9 +511,9 @@
 
       <div id="dayCardsContainer" aria-live="polite"></div>
 
-      <!-- optional custom notes -->
-      <div style="margin-top:6px">
-        <textarea class="section-custom-box" id="custom_notes" name="custom_notes" placeholder="Any special instructions? (optional)"></textarea>
+      <!-- overall custom notes -->
+      <div style="margin-top:12px">
+        <textarea class="section-custom-box" id="custom_notes" name="custom_notes" placeholder="Any special instructions for the whole order? (optional)"></textarea>
       </div>
     </form>
 
@@ -551,7 +543,6 @@
 
     <div class="qr-section">
       <span class="qr-label" style="display:block;font-weight:700;margin-bottom:10px">📱 Scan to Pay via UPI</span>
-      <!-- QR UPI data properly encoded (no stray spaces) -->
       <img class="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi%3A%2F%2Fpay%3Fpa%3D9962225337%2540ptaxis%26pn%3DKoumatha%26tn%3DFoodOrder" alt="UPI QR Code (Koumatha)" />
     </div>
 
@@ -610,7 +601,7 @@
       { name: "Pongal Sambar", price: 50 },
       { name: "Plain Maggie", price: 30 },
       { name: "Egg Maggie", price: 40 },
-      { name: "Medhu Vadai", price: 10 }
+      { name: "Medhu Vadai", price: 20 }
     ];
 
     const morningNonVeg = [
@@ -636,7 +627,7 @@
       { name: "Bun Paratha", price: 30 },
       { name: "Poori", price: 20 },
       { name: "Dosa", price: 20 },
-      { name: "Schezwan Veg Fried Rice", price: 100 },
+      { name: "Schezwan Veg Fried Rice + Gobi Manchurian", price: 100 },
       { name: "Chicken Schezwan Fried Rice", price: 110 },
       { name: "Egg Fried Rice", price: 100 },
       { name: "Paneer Butter Masala", price: 99 }
@@ -720,7 +711,7 @@
       if(v<20) input.value = v+1;
     };
 
-    // build day cards
+    // build day cards with added "Something else? Type here" boxes for morning, lunch, dinner
     const container = document.getElementById('dayCardsContainer');
     for(let i=0;i<days.length;i++){
       const isNonVeg = nonVegDays.includes(i);
@@ -728,6 +719,7 @@
       card.className = 'day-card collapsed';
       card.style.animationDelay = `${i * 0.06}s`;
 
+      // for morning, lunch, dinner we add a textarea id: morning_custom_${i}, lunch_custom_${i}, dinner_custom_${i}
       const cardContent = `
         <div class="meal-section">
           <div class="meal-title quick-snacks">☕ Quick Snacks & Beverages</div>
@@ -743,34 +735,33 @@
         <div class="meal-section">
           <div class="meal-title">🌅 Morning</div>
           <div class="menu-multi-row">${renderMultiSelect(morningMenu,'morning',i,false)}</div>
+          ${isNonVeg?`<div style="height:8px"></div>
+            <div class="menu-multi-row">${renderMultiSelect(morningNonVeg,'morning_nonveg',i,false)}</div>`:''}
+          <div style="margin-top:10px">
+            <textarea class="section-custom-box" id="morning_custom_${i}" name="morning_custom_${i}" placeholder="Something else for Morning? Type here..."></textarea>
+          </div>
         </div>
-
-        ${isNonVeg?`<div class="meal-section">
-          <div class="meal-title nonveg">🍗 Morning Non-Veg</div>
-          <div class="menu-multi-row">${renderMultiSelect(morningNonVeg,'morning_nonveg',i,false)}</div>
-        </div>`:''}
 
         <div class="meal-section">
           <div class="meal-title">🍽️ Lunch</div>
           <div class="meal-note">${lunchNote}</div>
           <div class="menu-multi-row">${renderMultiSelect(lunchVegMenu,'lunch',i,false)}</div>
+          ${isNonVeg?`<div style="height:8px"></div>
+            <div class="menu-multi-row">${renderMultiSelect(lunchNonVeg,'lunch_nonveg',i,false)}</div>`:''}
+          <div style="margin-top:10px">
+            <textarea class="section-custom-box" id="lunch_custom_${i}" name="lunch_custom_${i}" placeholder="Something else for Lunch? Type here..."></textarea>
+          </div>
         </div>
-
-        ${isNonVeg?`<div class="meal-section">
-          <div class="meal-title nonveg">🍗 Lunch Non-Veg</div>
-          <div class="meal-note">${lunchNonVegNote}</div>
-          <div class="menu-multi-row">${renderMultiSelect(lunchNonVeg,'lunch_nonveg',i,false)}</div>
-        </div>`:''}
 
         <div class="meal-section">
           <div class="meal-title">🌙 Dinner</div>
           <div class="menu-multi-row">${renderMultiSelect(dinnerMenu,'dinner',i,false)}</div>
+          ${isNonVeg?`<div style="height:8px"></div>
+            <div class="menu-multi-row">${renderMultiSelect(dinnerNonVeg,'dinner_nonveg',i,false)}</div>`:''}
+          <div style="margin-top:10px">
+            <textarea class="section-custom-box" id="dinner_custom_${i}" name="dinner_custom_${i}" placeholder="Something else for Dinner? Type here..."></textarea>
+          </div>
         </div>
-
-        ${isNonVeg?`<div class="meal-section">
-          <div class="meal-title nonveg">🍗 Dinner Non-Veg</div>
-          <div class="menu-multi-row">${renderMultiSelect(dinnerNonVeg,'dinner_nonveg',i,false)}</div>
-        </div>`:''}
 
         <div class="meal-section">
           <div class="meal-title">🥚 Egg Section</div>
@@ -808,28 +799,57 @@
       }
     };
 
-    // gather order
+    // gather order with per-day, per-section custom textareas included and build a clear arranged summary for email
     function gatherOrderSummary(){
       const name = (document.getElementById('customer_name')?.value || '').trim();
       const mobile = (document.getElementById('customer_mobile')?.value || '').trim();
-      let total = 0;
-      let summary = `Name: ${name}\nMobile: ${mobile}\n\n`;
+      const overallNotes = (document.getElementById('custom_notes')?.value || '').trim();
 
+      let total = 0;
+      let summaryLines = [];
+      summaryLines.push(`Name: ${name}`);
+      summaryLines.push(`Mobile: ${mobile}`);
+      summaryLines.push('');
+
+      // We'll also collect structured data for JSON POST
+      const structured = {
+        customer_name: name,
+        customer_mobile: mobile,
+        total_price: 0,
+        items: [], // { day, section, name, price, qty }
+        custom_notes_by_day: {}, // day -> { morning: "...", lunch: "...", dinner: "..." }
+        overall_notes: overallNotes || ''
+      };
+
+      // menus mapping
       const menus = [
-        { menu: quickSnacks, prefix: 'snack_' },
-        { menu: beverages, prefix: 'bev_' },
-        { menu: morningMenu, prefix: 'morning_' },
-        { menu: morningNonVeg, prefix: 'morning_nonveg_' },
-        { menu: lunchVegMenu, prefix: 'lunch_' },
-        { menu: lunchNonVeg, prefix: 'lunch_nonveg_' },
-        { menu: dinnerMenu, prefix: 'dinner_' },
-        { menu: dinnerNonVeg, prefix: 'dinner_nonveg_' },
-        { menu: eggMenu, prefix: 'egg_' }
+        { menu: quickSnacks, prefix: 'snack_', section: 'Quick Snacks' },
+        { menu: beverages, prefix: 'bev_', section: 'Beverages' },
+        { menu: morningMenu, prefix: 'morning_', section: 'Morning' },
+        { menu: morningNonVeg, prefix: 'morning_nonveg_', section: 'Morning Non-Veg' },
+        { menu: lunchVegMenu, prefix: 'lunch_', section: 'Lunch' },
+        { menu: lunchNonVeg, prefix: 'lunch_nonveg_', section: 'Lunch Non-Veg' },
+        { menu: dinnerMenu, prefix: 'dinner_', section: 'Dinner' },
+        { menu: dinnerNonVeg, prefix: 'dinner_nonveg_', section: 'Dinner Non-Veg' },
+        { menu: eggMenu, prefix: 'egg_', section: 'Egg' }
       ];
 
-      for(let d=0;d<days.length;d++){
-        let dayLines = [];
-        menus.forEach(({menu,prefix})=>{
+      for(let d=0; d<days.length; d++){
+        const dayName = days[d];
+        let dayHasContent = false;
+        let dayBlock = [];
+        // read custom textareas for morning,lunch,dinner
+        const morningCustom = (document.getElementById(`morning_custom_${d}`)?.value || '').trim();
+        const lunchCustom = (document.getElementById(`lunch_custom_${d}`)?.value || '').trim();
+        const dinnerCustom = (document.getElementById(`dinner_custom_${d}`)?.value || '').trim();
+        structured.custom_notes_by_day[dayName] = {
+          morning: morningCustom,
+          lunch: lunchCustom,
+          dinner: dinnerCustom
+        };
+
+        // check each menu for selected items
+        menus.forEach(({menu, prefix, section})=>{
           menu.forEach((item, idx)=>{
             const cbName = `${prefix}${d}_${idx}`;
             const qtyName = `${cbName}_qty`;
@@ -837,16 +857,58 @@
             const qtyInput = document.getElementById(qtyName);
             if(cb && cb.checked && qtyInput){
               const qty = Math.max(1, parseInt(qtyInput.value||"1",10));
+              const line = `${section} — ${item.name} (x${qty}) — ₹${item.price} each`;
+              dayBlock.push(line);
               total += item.price * qty;
-              dayLines.push(`  ${item.name} (x${qty})`);
+              structured.items.push({
+                day: dayName,
+                section,
+                name: item.name,
+                price: item.price,
+                qty
+              });
+              dayHasContent = true;
             }
           });
         });
-        if(dayLines.length) summary += `${days[d]}\n${dayLines.join('\n')}\n\n`;
+
+        // include custom typed notes for each section if present
+        if(morningCustom){
+          dayBlock.push(`Morning — Something else: ${morningCustom}`);
+          dayHasContent = true;
+        }
+        if(lunchCustom){
+          dayBlock.push(`Lunch — Something else: ${lunchCustom}`);
+          dayHasContent = true;
+        }
+        if(dinnerCustom){
+          dayBlock.push(`Dinner — Something else: ${dinnerCustom}`);
+          dayHasContent = true;
+        }
+
+        if(dayHasContent){
+          summaryLines.push(`${dayName}:`);
+          dayBlock.forEach(line => summaryLines.push(`  ${line}`));
+          summaryLines.push(''); // blank line between days
+        }
       }
 
-      summary += `Total: ₹${total}\n`;
-      return { summary, total, name, mobile };
+      summaryLines.push(`Total: ₹${total}`);
+      if(overallNotes) {
+        summaryLines.push('');
+        summaryLines.push('Overall notes:');
+        summaryLines.push(`  ${overallNotes}`);
+      }
+
+      structured.total_price = total;
+      // return both human-readable summary and structured data
+      return {
+        summaryText: summaryLines.join('\n'),
+        structured,
+        total,
+        name,
+        mobile
+      };
     }
 
     /* ====== submission & UI interactions ====== */
@@ -875,12 +937,10 @@
       successPopup.classList.add('show');
       successPopup.setAttribute('aria-hidden', 'false');
       overlay.setAttribute('aria-hidden','false');
-      // focus management
       closePopupBtn.focus();
     }
 
     function showError(message){
-      // small error notification
       const err = document.createElement('div');
       err.className = 'notification';
       err.style.background = 'linear-gradient(135deg,#ff7f50,#ffb347)';
@@ -890,6 +950,7 @@
       setTimeout(()=>{ err.classList.remove('show'); err.classList.add('hide'); setTimeout(()=> err.remove(),380) }, 3500);
     }
 
+    // When submitting, send both a clear text summary and structured JSON so the mail is arranged and includes custom boxes.
     submitBtn.addEventListener('click', async function(e){
       e.preventDefault();
       const name = document.getElementById('customer_name').value.trim();
@@ -900,30 +961,33 @@
       }
       setLoading(true);
       const result = gatherOrderSummary();
-      // POST to Formspree — handle non-OK responses properly
+
+      // Prepare payload for Formspree (we send summaryText for clear email and structured data for reference)
+      const payload = {
+        customer_name: result.structured.customer_name,
+        customer_mobile: result.structured.customer_mobile,
+        total_price: result.structured.total_price,
+        orderSummaryText: result.summaryText,
+        orderItems: result.structured.items,
+        customNotesByDay: result.structured.custom_notes_by_day,
+        overall_notes: result.structured.overall_notes,
+        meta: { submittedAt: new Date().toISOString(), appVersion: "V2.1" }
+      };
+
       try{
         const resp = await fetch(formspreeEndpointUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            customer_name: result.name,
-            customer_mobile: result.mobile,
-            orderSummaryText: result.summary,
-            totalPrice: result.total,
-            meta: { submittedAt: new Date().toISOString() }
-          })
+          body: JSON.stringify(payload)
         });
         if(!resp.ok){
-          // server returned an error, show error but still show popup if you want. Here show error and stop.
           showError('Could not submit order — please try again');
           setLoading(false);
           return;
         }
-        // success
         setLoading(false);
         showSuccess(result.total);
       } catch(err){
-        // network error
         setLoading(false);
         showError('Network error — check connection and try again');
         console.error(err);
@@ -935,7 +999,7 @@
       successPopup.setAttribute('aria-hidden', 'true');
       overlay.classList.remove('show');
       overlay.setAttribute('aria-hidden', 'true');
-      // reset form (preserve name/mobile? currently reset everything)
+      // reset form
       document.getElementById('menuForm').reset();
       // collapse all cards
       document.querySelectorAll('.day-card').forEach(c=>{
@@ -944,33 +1008,31 @@
         const content = c.querySelector('.card-content');
         if(content) content.style.maxHeight = '0px';
       });
-      // bring focus back to submit for quick repeat
       submitBtn.focus();
     }
 
     closePopupBtn.addEventListener('click', closePopup);
     overlay.addEventListener('click', (e) => { if(e.target === overlay) closePopup(); });
 
-    // small accessibility: allow Esc to close popup
+    // allow Esc to close popup
     document.addEventListener('keydown', (e)=>{
       if(e.key === 'Escape'){
         if(successPopup.classList.contains('show')) closePopup();
       }
     });
 
-    // improve performance on mobile: passive listeners for touch scroll
+    // performance: passive listeners for touch scroll
     try{
       window.addEventListener('touchstart', function(){}, {passive:true});
       window.addEventListener('touchmove', function(){}, {passive:true});
     }catch(e){ /* ignore */ }
 
-    // a11y: ensure header collapse on scroll (small UX improvement)
+    // header collapse on scroll
     let lastScroll = 0;
     const headerEl = document.querySelector('.header');
     window.addEventListener('scroll', () => {
       const s = window.scrollY || 0;
       if(s > lastScroll && s > 120){
-        // scrolling down -> hide a bit
         headerEl.style.transform = 'translateY(-20%)';
       } else {
         headerEl.style.transform = 'translateY(0)';
@@ -978,11 +1040,7 @@
       lastScroll = s;
     }, { passive: true });
 
-    /* ===== Announcement logic =====
-       Shows the "Newly added Quick Snacks & Beverages" announcement
-       once per page load. User can dismiss it; dismissal is remembered
-       during the session via sessionStorage.
-    */
+    /* ===== Announcement logic ===== */
     (function manageAnnouncement(){
       const ANN_KEY = 'koumatha_announcement_dismissed_v1';
       const ann = document.getElementById('announcement');
@@ -997,10 +1055,8 @@
         ann.setAttribute('aria-hidden', 'true');
       }
 
-      // if the user already dismissed in this session, don't show
       const dismissed = sessionStorage.getItem(ANN_KEY);
       if(!dismissed){
-        // small delay so it doesn't clash with header paint
         setTimeout(showAnn, 450);
       }
 
@@ -1009,7 +1065,6 @@
         try{ sessionStorage.setItem(ANN_KEY, '1'); }catch(e){}
       });
 
-      // auto-hide after 6s unless dismissed
       setTimeout(()=>{
         if(!sessionStorage.getItem(ANN_KEY)) hideAnn();
       }, 6500);
@@ -1018,5 +1073,3 @@
   </script>
 </body>
 </html>
-
-
