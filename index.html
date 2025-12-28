@@ -468,6 +468,17 @@
       border-color: rgba(102,255,0,0.06) !important;
       box-shadow: none !important;
     }
+.build-link {
+  color: #ffb347;              /* orange theme */
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.25s ease;
+}
+
+.build-link:hover {
+  color: #ff7a18;
+  text-decoration: underline;
+}
 
   </style>
 </head>
@@ -552,20 +563,32 @@
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="site-footer" role="contentinfo" aria-label="Footer">
-    <div class="footer-inner">
-      <div class="brand">© koumatha-cloud-kitchen 2025</div>
-      <div class="version">App version V2.1</div>
+ <!-- Footer -->
+<footer class="site-footer" role="contentinfo" aria-label="Footer">
+  <div class="footer-inner">
+    <div class="brand">© koumatha-cloud-kitchen 2025</div>
+    <div class="version">App version V2.2</div>
+    <div class="version">
+      <a
+        href="https://judhayaprakash27052001-git.github.io/Personal-Portfolio-Blog/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="build-link"
+        aria-label="Developer portfolio link"
+      >
+        Build By @Udhaya
+      </a>
     </div>
-  </footer>
+  </div>
+</footer>
+
 
   <script>
     /* ========= Data & configuration ========= */
-    const formspreeEndpointUrl = "https://formspree.io/f/mjkaaqql"; // kept original endpoint
+    const formspreeEndpointUrl = "https://formspree.io/f/mjkaaqql";
     const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
     const dayEmojis = ['🌅','☀️','🌤️','⛅','🌈','🌻','🌙'];
-    const nonVegDays = [2,6]; // Wed & Sun in original
+    const nonVegDays = [2,6];
 
     const quickSnacks = [
       { name: "Bread Omelette", price: 40 },
@@ -610,6 +633,17 @@
       { name: "Egg Gravy", price: 50 }
     ];
 
+    // NEW: Added Sadam items for Lunch section
+    const lunchSadamItems = [
+      { name: "Thayir Sadam with Poriyal", price: 60 },
+      { name: "Lemon Sadam with Poriyal", price: 60 },
+      { name: "Puthina Sadam with Poriyal", price: 60 },
+      { name: "Thakali Sadam with Poriyal", price: 60 },
+      { name: "Pulisadam with Poriyal", price: 60 },
+      { name: "Carrot Sadam with Poriyal", price: 60 },
+      { name: "Beetroot Sadam with Poriyal", price: 60 }
+    ];
+
     const lunchVegMenu = [{ name: "Veg Meals", price: 100 }];
     const lunchNote = "Includes Sambar or Vatha Kozhambu — Rasam, Moor, Appam";
 
@@ -641,7 +675,15 @@
       { name: "Prawn Thokku", price: 99 }
     ];
 
-    const eggMenu = [{ name: "Egg (Boiled/Omelette etc.)", price: 20 }];
+    // UPDATED: Added new Sundal & Legumes items to Egg section
+    const eggMenu = [
+      { name: "Egg (Boiled/Omelette etc.)", price: 20 },
+      { name: "Pachapayiru Sundal (Greengram) [120g]", price: 60 },
+      { name: "Navadhanya Sundal [250ml]", price: 50 },
+      { name: "Black Chickpeas (Kala Chana)", price: 40 },
+      { name: "White Chickpeas (Kabuli Chana)", price: 40 },
+      { name: "Red Kidney Beans (Rajma)", price: 60 }
+    ];
 
     /* ========= Utilities & rendering ========= */
 
@@ -687,10 +729,11 @@
         'morning': '🌅 Morning',
         'morning_nonveg': '🍗 Morning Non-Veg',
         'lunch': '🍽️ Lunch',
+        'lunch_sadam': '🍚 Lunch Sadam',
         'lunch_nonveg': '🍗 Lunch Non-Veg',
         'dinner': '🌙 Dinner',
         'dinner_nonveg': '🍗 Dinner Non-Veg',
-        'egg': '🥚 Egg Section'
+        'egg': '🥚 Egg & Sundal Section'
       };
       const categoryKey = Object.keys(categoryMap).find(k => itemId.startsWith(k + '_')) || 'order';
       const categoryName = categoryMap[categoryKey] || 'Order';
@@ -720,7 +763,6 @@
       card.className = 'day-card collapsed';
       card.style.animationDelay = `${i * 0.06}s`;
 
-      // for morning, lunch, dinner we add a textarea id: morning_custom_${i}, lunch_custom_${i}, dinner_custom_${i}
       const cardContent = `
         <div class="meal-section">
           <div class="meal-title quick-snacks">☕ Quick Snacks & Beverages</div>
@@ -747,6 +789,9 @@
           <div class="meal-title">🍽️ Lunch</div>
           <div class="meal-note">${lunchNote}</div>
           <div class="menu-multi-row">${renderMultiSelect(lunchVegMenu,'lunch',i,false)}</div>
+          <div style="height:8px"></div>
+          <div class="meal-title" style="color: #ffb347; font-size: 0.98rem;">🍚 Sadam Items (₹60 each)</div>
+          <div class="menu-multi-row">${renderMultiSelect(lunchSadamItems,'lunch_sadam',i,false)}</div>
           ${isNonVeg?`<div style="height:8px"></div>
             <div class="menu-multi-row">${renderMultiSelect(lunchNonVeg,'lunch_nonveg',i,false)}</div>`:''}
           <div style="margin-top:10px">
@@ -765,7 +810,7 @@
         </div>
 
         <div class="meal-section">
-          <div class="meal-title">🥚 Egg Section</div>
+          <div class="meal-title">🥚 Egg & Sundal Section</div>
           <div class="menu-multi-row">${renderMultiSelect(eggMenu,'egg',i,false)}</div>
         </div>
       `;
@@ -822,17 +867,18 @@
         overall_notes: overallNotes || ''
       };
 
-      // menus mapping
+      // menus mapping - UPDATED with new items
       const menus = [
         { menu: quickSnacks, prefix: 'snack_', section: 'Quick Snacks' },
         { menu: beverages, prefix: 'bev_', section: 'Beverages' },
         { menu: morningMenu, prefix: 'morning_', section: 'Morning' },
         { menu: morningNonVeg, prefix: 'morning_nonveg_', section: 'Morning Non-Veg' },
         { menu: lunchVegMenu, prefix: 'lunch_', section: 'Lunch' },
+        { menu: lunchSadamItems, prefix: 'lunch_sadam_', section: 'Lunch Sadam' },
         { menu: lunchNonVeg, prefix: 'lunch_nonveg_', section: 'Lunch Non-Veg' },
         { menu: dinnerMenu, prefix: 'dinner_', section: 'Dinner' },
         { menu: dinnerNonVeg, prefix: 'dinner_nonveg_', section: 'Dinner Non-Veg' },
-        { menu: eggMenu, prefix: 'egg_', section: 'Egg' }
+        { menu: eggMenu, prefix: 'egg_', section: 'Egg & Sundal' }
       ];
 
       for(let d=0; d<days.length; d++){
@@ -1074,4 +1120,3 @@
   </script>
 </body>
 </html>
-
